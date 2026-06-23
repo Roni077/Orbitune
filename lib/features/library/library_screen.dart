@@ -1,21 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'widgets/songs_tab.dart';
+import 'widgets/albums_tab.dart';
+import 'widgets/artists_tab.dart';
+import 'widgets/genres_tab.dart';
+import 'widgets/folders_tab.dart';
 
 class LibraryScreen extends StatelessWidget {
   const LibraryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Library'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+    return DefaultTabController(
+      length: 5,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Library', style: TextStyle(fontWeight: FontWeight.bold)),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.search),
+              onPressed: () {
+                context.push('/search');
+              },
+            ),
+          ],
+          bottom: const TabBar(
+            isScrollable: true,
+            tabAlignment: TabAlignment.start,
+            tabs: [
+              Tab(text: 'Songs'),
+              Tab(text: 'Albums'),
+              Tab(text: 'Artists'),
+              Tab(text: 'Genres'),
+              Tab(text: 'Folders'),
+            ],
+          ),
+        ),
+        body: const TabBarView(
           children: [
-            const Icon(Icons.library_music, size: 64, color: Colors.deepPurpleAccent),
-            const SizedBox(height: 16),
-            Text('Library Screen', style: Theme.of(context).textTheme.headlineMedium),
+            SongsTab(),
+            AlbumsTab(),
+            ArtistsTab(),
+            GenresTab(),
+            FoldersTab(),
           ],
         ),
       ),

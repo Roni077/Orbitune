@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:audio_service/audio_service.dart';
+import 'package:isar/isar.dart';
+import 'package:path_provider/path_provider.dart';
 import 'routes/app_router.dart';
 import 'themes/app_theme.dart';
 import 'themes/theme_provider.dart';
 import 'features/player/orbitune_audio_handler.dart';
 import 'features/player/player_providers.dart';
+import 'core/providers.dart';
+import 'data/models/audio_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,10 +26,18 @@ void main() async {
     ),
   );
   
+  // Initialize Isar
+  final dir = await getApplicationDocumentsDirectory();
+  final isar = await Isar.open(
+    [AudioModelSchema],
+    directory: dir.path,
+  );
+  
   runApp(
     ProviderScope(
       overrides: [
         audioHandlerProvider.overrideWithValue(audioHandler),
+        isarProvider.overrideWithValue(isar),
       ],
       child: const OrbituneApp(),
     ),

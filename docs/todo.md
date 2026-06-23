@@ -53,13 +53,13 @@
 - [x] Create Riverpod providers: `playbackStateProvider`, `currentSongProvider`, `queueProvider`.
 
 ## Phase 7: UI Implementation - Home & Library
-- [ ] Build Home Screen: "Recently Added", "Most Played", and "Usage Dashboard" (Analytics).
-- [ ] Implement Pull-to-refresh for manual media scanning.
-- [ ] Build Library Screen: Tabbed views (Songs, Albums, Artists, Genres).
-- [ ] Implement Folder View (Browse by folder, Folder Tree Navigation, Folder Pinning).
-- [ ] Implement efficient caching, lazy loading, and smooth scrolling for large lists.
-- [ ] Implement alphabetic fast-scroll bar.
-- [ ] Add Instant Search (Search songs, albums, artists, playlists) with Search History.
+- [x] Build Home Screen: "Recently Added", "Most Played", and "Usage Dashboard" (Analytics).
+- [x] Implement Pull-to-refresh for manual media scanning.
+- [x] Build Library Screen: Tabbed views (Songs, Albums, Artists, Genres).
+- [x] Implement Folder View (Browse by folder, Folder Tree Navigation, Folder Pinning).
+- [x] Implement efficient caching, lazy loading, and smooth scrolling for large lists.
+- [x] Implement alphabetic fast-scroll bar.
+- [x] Add Instant Search (Search songs, albums, artists, playlists) with Search History.
 
 ## Phase 8: Advanced Player Experience & Gestures
 - [ ] Build `MiniPlayer` widget positioned above the bottom navigation bar.

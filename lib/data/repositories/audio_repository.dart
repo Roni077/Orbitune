@@ -3,20 +3,9 @@ import 'package:path_provider/path_provider.dart';
 import '../models/audio_model.dart';
 
 class AudioRepository {
-  late Isar _isar;
-  bool _isInitialized = false;
+  final Isar _isar;
 
-  Future<void> init() async {
-    if (_isInitialized) return;
-    
-    // Use path_provider to get documents dir
-    final dir = await getApplicationDocumentsDirectory();
-    _isar = await Isar.open(
-      [AudioModelSchema],
-      directory: dir.path,
-    );
-    _isInitialized = true;
-  }
+  AudioRepository(this._isar);
 
   Isar get isar => _isar;
 
@@ -28,6 +17,10 @@ class AudioRepository {
 
   Future<List<AudioModel>> getAllAudios() async {
     return await _isar.audioModels.where().sortByDateAddedDesc().findAll();
+  }
+
+  Stream<List<AudioModel>> watchAllAudios() {
+    return _isar.audioModels.where().sortByDateAddedDesc().watch(fireImmediately: true);
   }
 
   Future<void> clearAll() async {

@@ -4,9 +4,11 @@ import 'package:go_router/go_router.dart';
 import '../features/home/home_screen.dart';
 import '../features/library/library_screen.dart';
 import '../features/settings/settings_screen.dart';
+import '../features/search/search_screen.dart';
 import '../shared/scaffold_with_nav_bar.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> _shellNavigatorSettingsKey = GlobalKey<NavigatorState>();
 
 final GoRouter appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
@@ -34,6 +36,7 @@ final GoRouter appRouter = GoRouter(
           ],
         ),
         StatefulShellBranch(
+          navigatorKey: _shellNavigatorSettingsKey,
           routes: [
             GoRoute(
               path: '/settings',
@@ -42,6 +45,11 @@ final GoRouter appRouter = GoRouter(
           ],
         ),
       ],
+    ),
+    GoRoute(
+      path: '/search',
+      parentNavigatorKey: _rootNavigatorKey, // Overlay over the bottom nav bar
+      builder: (context, state) => const SearchScreen(),
     ),
   ],
 );
