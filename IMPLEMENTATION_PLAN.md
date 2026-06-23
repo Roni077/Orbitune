@@ -1,68 +1,85 @@
 # Orbitune: Offline Music Player Architecture & Implementation Plan
 
-This document outlines the architectural blueprint and execution plan for building the Orbitune offline music player. It strictly follows the project-scoped guidelines in `.agents/AGENTS.md` (MVVM architecture, declarative routing, etc.).
+This document outlines the architectural blueprint and execution plan for building the Orbitune offline music player. It incorporates all requirements from your detailed specification.
 
-## Open Questions for Approval
+## Architecture & Tech Stack
 
-1. **State Management:** The architecture skill recommends MVVM with `ChangeNotifier` and `provider` or `get_it`. Is `provider` + `get_it` acceptable, or do you prefer `flutter_riverpod` or `flutter_bloc`?
-2. **Desktop Audio Engine:** `just_audio` is excellent for mobile but has limited official Windows support without community extensions. An alternative is `media_kit`, which is robust across all platforms. Are you okay with using `media_kit` to ensure high-quality Windows playback, or stick to `just_audio`?
-3. **Design Aesthetic:** I plan to build a sleek, **premium dark-mode UI with glassmorphism effects** and dynamic gradients based on album art. Does this align with your vision?
+- **State Management**: Riverpod (`flutter_riverpod`, `riverpod_annotation`)
+- **Routing**: GoRouter
+- **Database**: Isar (high performance, great for complex queries like tracks, albums, artists) & Hive (for simple key-value settings)
+- **Dependency Injection**: GetIt (for singletons like AudioHandler) paired with Riverpod (for UI state)
+- **Audio Engine**: Just Audio + Audio Service + Audio Session
+- **Local Files**: `on_audio_query` & `permission_handler`
+- **Models**: Freezed + Json Serializable
+- **UI/UX**: Material 3, Dynamic Colors, AMOLED Dark Theme, Glassmorphism
 
-## Proposed Architecture (Strict MVVM)
+## Folder Structure
 
-Following the `flutter-apply-architecture-best-practices` skill, the app will be structured into distinct layers:
+Following your specification, a feature-based modular Clean Architecture approach:
 
-1. **Data Layer (`lib/data/`)**: 
-   - *Services*: Native media querying, audio player wrappers, and local storage (Hive/SharedPreferences).
-   - *Repositories*: Single source of truth for audio files, playlists, and settings.
-2. **Logic Layer (`lib/domain/`)**: 
-   - *Models*: Immutable data classes for `Song`, `Playlist`, etc.
-3. **UI Layer (`lib/ui/`)**: 
-   - *Core*: Themes, shared widgets, glassmorphic containers.
-   - *Features*: Specific MVVM structures for `Home`, `Player`, `Library`, etc.
-   - *Routing*: `go_router` for declarative navigation and nested shell routes (BottomNavigationBar).
-
-## Proposed Dependencies
-
-- **Routing:** `go_router`
-- **State & DI:** `provider`, `get_it`
-- **Audio Playback:** `just_audio` (or `media_kit`) & `audio_service` (for lock-screen/background playback)
-- **Local Files:** `on_audio_query` (to scan devices for `.mp3`/`.wav`), `permission_handler`
-- **Local DB:** `hive` or `shared_preferences` (for playlists and favorites)
-- **UI:** `google_fonts`, `palette_generator` (for dynamic UI colors based on album art)
+```text
+lib/
+ ├── core/          # App-wide constants, errors, type defs
+ ├── data/          # DTOs, API wrappers, local storage
+ ├── domain/        # Entities, use cases
+ ├── features/      # Feature modules (player, library, settings)
+ ├── shared/        # Shared logic across features
+ ├── services/      # External service wrappers (Audio, Permissions)
+ ├── widgets/       # Reusable UI components
+ ├── routes/        # GoRouter configuration
+ ├── themes/        # Material 3 & Dynamic color configs
+ ├── models/        # Global models
+ ├── repositories/  # Repository interfaces & implementations
+ └── main.dart      # Entry point
+```
 
 ## Execution Phases
 
-### Phase 1: Core Setup & Dependencies
-- Add all required packages to `pubspec.yaml`.
-- Set up the folder structure (`lib/ui`, `lib/data`, `lib/domain`).
-- Configure `get_it` for dependency injection.
+### Phase 1: Foundation & Dependencies
+- Update `pubspec.yaml` with all dependencies (Riverpod, GoRouter, Isar, Hive, Just Audio, Audio Service, Freezed, etc.).
+- Scaffold the directory structure.
+- Initialize `GetIt` locator and Riverpod `ProviderScope`.
+- Configure Android, iOS, and Windows native builds for audio permissions and background execution.
 
-### Phase 2: Navigation & Theming
-- Implement `go_router` with a `StatefulShellRoute` to create a persistent bottom navigation bar (Home, Search, Library).
-- Create the Orbitune Dark Theme with premium typography (`google_fonts`) and color tokens.
+### Phase 2: Core Services & Data Layer
+- Implement `PermissionService` (handling Android 13+ granular audio permissions).
+- Implement `LocalMediaScannerService` using `on_audio_query` to index device storage.
+- Initialize Isar Database schema (Songs, Albums, Artists, Playlists).
+- Create `AudioRepository` to abstract data access.
 
-### Phase 3: Data Layer & Permissions
-- Implement the `PermissionService` to request local storage/audio permissions on Android and iOS.
-- Implement the `AudioQueryService` (wrapping `on_audio_query`) to fetch songs, albums, and artists.
-- Create the `AudioRepository`.
+### Phase 3: Audio Engine & Background Service
+- Implement `AudioHandler` extending `BaseAudioHandler` using `just_audio`.
+- Configure `audio_session` for audio focus and interruptions.
+- Implement gapless playback, crossfade, and queue management within the `AudioHandler`.
+- Expose playback state via Riverpod providers.
 
-### Phase 4: Audio Engine Integration
-- Set up the background audio task using `audio_service`.
-- Create the `AudioPlayerViewModel` to manage play, pause, seek, and current track state.
+### Phase 4: UI Architecture & Theming
+- Implement GoRouter configuration with `StatefulShellRoute` for the main navigation (Home, Library, Settings).
+- Create AMOLED Dark and Light themes utilizing Material 3 Dynamic Colors.
+- Build glassmorphism utility widgets.
 
-### Phase 5: High-Fidelity UI Construction
-- Build the `HomeScreen` (Recent, Playlists).
-- Build the full-screen `PlayerView` with dynamic background gradients, seek bars, and glassmorphism.
-- Integrate micro-animations for play/pause transitions and list scrolling.
+### Phase 5: Feature Implementation - Library & Home
+- Build the `Library` feature (Folders, Artists, Albums, Songs, Genres).
+- Implement smooth scrolling and lazy loading for large lists.
+- Build the `Home` feature (Recently Added, Most Played).
+
+### Phase 6: Feature Implementation - Player UI
+- Build the persistent `MiniPlayer` widget.
+- Build the full-screen `PlayerScreen` with dynamic background blurs based on album art.
+- Implement Hero animations between the MiniPlayer and Full Player.
+- Add advanced controls (Lyrics, Equalizer access, Queue management, Pitch/Speed).
+
+### Phase 7: Feature Implementation - Playlists & Advanced Features
+- Implement Playlist CRUD operations using Isar.
+- Build the Equalizer UI and audio effects service.
+- Implement Search feature (instant search across tracks/albums/artists).
+
+### Phase 8: Polish & Optimization
+- Add `flutter_native_splash` and `flutter_launcher_icons`.
+- Perform memory profiling and 120Hz animation optimization.
+- Write unit, widget, and integration tests.
 
 ## Verification Plan
 
-### Automated Tests
-- Run `flutter analyze` to ensure strict linting.
-- Add widget tests for the core UI components (`PlayerControls`, `SongListTile`).
-
-### Manual Verification
-- Deploy to an Android device/emulator to verify local storage permissions and file fetching.
-- Verify background audio playback and lock-screen controls.
-- Verify the UI aesthetics and responsive layout on mobile vs. desktop/Windows window sizes.
+- **Automated**: Run `flutter analyze`, unit tests for `AudioHandler`, widget tests for `MiniPlayer`.
+- **Manual**: Deploy to Android device to test background playback, lock screen controls, Media Style notifications, and Scoped Storage scanning. Test Windows desktop layout responsiveness.
