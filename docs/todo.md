@@ -12,13 +12,13 @@
 - [x] Configure native splash screen (`flutter_native_splash`).
 
 ## Phase 2: Design System, Theming & Accessibility
-- [ ] Create `lib/themes/app_theme.dart`.
-- [ ] Implement Material 3 `ColorScheme` & Accent Color Selection.
-- [ ] Add dynamic color extraction using `dynamic_color` package.
-- [ ] Create AMOLED Dark Theme, Light Theme, and High Contrast Mode.
-- [ ] Define `AppTextStyles` using Google Fonts (Inter/Outfit) with Large Font Support.
-- [ ] Build reusable `GlassContainer` widget for glassmorphism effects.
-- [ ] Ensure full Accessibility (Screen Reader Support & Keyboard Navigation).
+- [x] Create `lib/themes/app_theme.dart`.
+- [x] Implement Material 3 `ColorScheme` & Accent Color Selection.
+- [x] Add dynamic color extraction using `dynamic_color` package.
+- [x] Create AMOLED Dark Theme, Light Theme, and High Contrast Mode.
+- [x] Define `AppTextStyles` using Google Fonts (Inter/Outfit) with Large Font Support.
+- [x] Build reusable `GlassContainer` widget for glassmorphism effects.
+- [x] Ensure full Accessibility (Screen Reader Support & Keyboard Navigation).
 
 ## Phase 3: Core App Shell & Routing
 - [ ] Create `lib/routes/app_router.dart` utilizing `GoRouter`.
