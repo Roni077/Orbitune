@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dynamic_color/dynamic_color.dart';
+import 'routes/app_router.dart';
 import 'themes/app_theme.dart';
 import 'themes/theme_provider.dart';
 
@@ -39,17 +40,12 @@ class OrbituneApp extends ConsumerWidget {
           darkTheme = AppTheme.darkTheme(themeState.useDynamicColor ? darkDynamic : null);
         }
 
-        return MaterialApp(
+        return MaterialApp.router(
           title: 'Orbitune',
           theme: theme,
           darkTheme: darkTheme,
           themeMode: ref.read(themeProvider.notifier).themeMode,
-          // TODO: Replace with GoRouter in Phase 3
-          home: const Scaffold(
-            body: Center(
-              child: Text('Orbitune - Theming Initialized'),
-            ),
-          ),
+          routerConfig: appRouter,
         );
       },
     );

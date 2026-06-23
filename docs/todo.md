@@ -21,10 +21,10 @@
 - [x] Ensure full Accessibility (Screen Reader Support & Keyboard Navigation).
 
 ## Phase 3: Core App Shell & Routing
-- [ ] Create `lib/routes/app_router.dart` utilizing `GoRouter`.
-- [ ] Implement `StatefulShellRoute` for Bottom Navigation Bar.
-- [ ] Create `ScaffoldWithNavBar` with fluid micro-animations (120 FPS optimized).
-- [ ] Scaffold empty screens for Home, Library, and Settings.
+- [x] Create `lib/routes/app_router.dart` utilizing `GoRouter`.
+- [x] Implement `StatefulShellRoute` for Bottom Navigation Bar.
+- [x] Create `ScaffoldWithNavBar` with fluid micro-animations (120 FPS optimized).
+- [x] Scaffold empty screens for Home, Library, and Settings.
 
 ## Phase 4: Local Storage & Security (Database)
 - [ ] Define Isar `@collection` models with Metadata support (ID3 Tags, Track Number, Year, Genre).
