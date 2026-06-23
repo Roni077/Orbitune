@@ -38,11 +38,14 @@ jobs:
         run: flutter pub get
       - name: Build Windows Debug
         run: flutter build windows --debug
+      - name: Zip and Rename
+        run: Compress-Archive -Path build\windows\x64\runner\Debug\* -DestinationPath build\windows\x64\runner\orbitune_windows_x64_debug.zip
+        shell: pwsh
       - name: Upload Windows Debug Artifact
         uses: actions/upload-artifact@v4
         with:
           name: orbitune-windows-debug
-          path: build/windows/x64/runner/Debug/
+          path: build/windows/x64/runner/orbitune_windows_x64_debug.zip
 
   build-release:
     name: Build Release Windows
@@ -58,8 +61,11 @@ jobs:
         run: flutter pub get
       - name: Build Windows Release
         run: flutter build windows --release
+      - name: Zip and Rename
+        run: Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath build\windows\x64\runner\orbitune_windows_x64_release.zip
+        shell: pwsh
       - name: Upload Windows Release Artifact
         uses: actions/upload-artifact@v4
         with:
           name: orbitune-windows-release
-          path: build/windows/x64/runner/Release/
+          path: build/windows/x64/runner/orbitune_windows_x64_release.zip

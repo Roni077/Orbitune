@@ -38,11 +38,15 @@ jobs:
         run: flutter pub get
       - name: Build iOS Debug (unsigned)
         run: flutter build ios --debug --no-codesign
+      - name: Zip and Rename
+        run: |
+          cd build/ios/iphoneos
+          zip -r orbitune_ios_universal_debug.zip Runner.app
       - name: Upload iOS Debug Artifact
         uses: actions/upload-artifact@v4
         with:
           name: orbitune-ios-debug-app
-          path: build/ios/iphoneos/Runner.app
+          path: build/ios/iphoneos/orbitune_ios_universal_debug.zip
 
   build-release:
     name: Build Release iOS
@@ -58,8 +62,12 @@ jobs:
         run: flutter pub get
       - name: Build iOS Release (unsigned)
         run: flutter build ios --release --no-codesign
+      - name: Zip and Rename
+        run: |
+          cd build/ios/iphoneos
+          zip -r orbitune_ios_universal_release.zip Runner.app
       - name: Upload iOS Release Artifact
         uses: actions/upload-artifact@v4
         with:
           name: orbitune-ios-release-app
-          path: build/ios/iphoneos/Runner.app
+          path: build/ios/iphoneos/orbitune_ios_universal_release.zip
