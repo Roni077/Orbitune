@@ -27,11 +27,13 @@
 - [x] Scaffold empty screens for Home, Library, and Settings.
 
 ## Phase 4: Local Storage & Security (Database)
-- [ ] Define Isar `@collection` models with Metadata support (ID3 Tags, Track Number, Year, Genre).
-- [ ] Create Isar models: `SongEntity`, `AlbumEntity`, `ArtistEntity`, `PlaylistEntity`, `HistoryEntity`.
-- [ ] Initialize Isar database with Local Data Encryption (Safe Storage Practices).
-- [ ] Setup Hive boxes for `UserPreferences` (Theme, scan settings, audio quality).
-- [ ] Implement `LocalMediaRepository` (Isar CRUD operations).
+- [x] Define Isar `@collection` models with Metadata support (ID3 Tags, Track Number, Year, Genre).
+- [x] Create `lib/data/repositories/audio_repository.dart`.
+- [x] Create Device Storage permission flow (Android Scoped Storage handle).
+- [x] Create robust MediaScanner service to index all audio files.
+- [x] Run `build_runner` for Isar code generation.
+- [x] Setup Hive boxes for `UserPreferences` (Theme, scan settings, audio quality).
+- [x] Implement `LocalMediaRepository` (Isar CRUD operations).
 
 ## Phase 5: Media Scanning & Permissions
 - [ ] Implement `PermissionService` (Scoped Storage Support, Android 13+).

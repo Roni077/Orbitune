@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 class AppTextStyles {
   // Use Outfit for headings (modern, geometric) and Inter for body text (highly readable)
   
-  static TextTheme getTextTheme(BuildContext context, ColorScheme colorScheme) {
+  static TextTheme getTextTheme(ColorScheme colorScheme) {
     return TextTheme(
       displayLarge: GoogleFonts.outfit(
         fontSize: 57,

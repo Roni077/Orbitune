@@ -13,7 +13,7 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
-      textTheme: AppTextStyles.getTextTheme(null, scheme),
+      textTheme: AppTextStyles.getTextTheme(scheme),
       scaffoldBackgroundColor: scheme.surface,
       appBarTheme: AppBarTheme(
         backgroundColor: scheme.surface,
@@ -33,7 +33,7 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
-      textTheme: AppTextStyles.getTextTheme(null, scheme),
+      textTheme: AppTextStyles.getTextTheme(scheme),
       scaffoldBackgroundColor: scheme.surface,
       appBarTheme: AppBarTheme(
         backgroundColor: scheme.surface,
@@ -59,7 +59,7 @@ class AppTheme {
       useMaterial3: true,
       colorScheme: amoledScheme,
       scaffoldBackgroundColor: AppColors.amoledBackground,
-      textTheme: AppTextStyles.getTextTheme(null, amoledScheme),
+      textTheme: AppTextStyles.getTextTheme(amoledScheme),
       appBarTheme: const AppBarTheme(
         backgroundColor: AppColors.amoledBackground,
         elevation: 0,
@@ -84,7 +84,7 @@ class AppTheme {
       useMaterial3: true,
       colorScheme: scheme,
       scaffoldBackgroundColor: scheme.surface,
-      textTheme: AppTextStyles.getTextTheme(context, scheme),
+      textTheme: AppTextStyles.getTextTheme(scheme),
     );
   }
 }
