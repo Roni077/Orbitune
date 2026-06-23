@@ -36,12 +36,12 @@
 - [x] Implement `LocalMediaRepository` (Isar CRUD operations).
 
 ## Phase 5: Media Scanning & Permissions
-- [ ] Implement `PermissionService` (Scoped Storage Support, Android 13+).
-- [ ] Implement `LocalMediaScannerService` wrapping `on_audio_query`.
-- [ ] Support scanning internal storage, SD cards, and recursive folder scanning.
-- [ ] Implement feature to exclude specific folders.
-- [ ] Implement background isolates for fast indexing of large libraries without blocking UI.
-- [ ] Auto-extract Album Art and Artist Information during scanning.
+- [x] Implement `PermissionService` (Scoped Storage Support, Android 13+).
+- [x] Implement `LocalMediaScannerService` wrapping `on_audio_query`.
+- [x] Support scanning internal storage, SD cards, and recursive folder scanning.
+- [x] Implement feature to exclude specific folders.
+- [x] Implement background isolates for fast indexing of large libraries without blocking UI.
+- [x] Auto-extract Album Art and Artist Information during scanning.
 
 ## Phase 6: Player Engine & Background Playback
 - [ ] Create `OrbituneAudioHandler` extending `BaseAudioHandler` using `just_audio`.

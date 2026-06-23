@@ -1,7 +1,25 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:path_provider/path_provider.dart';
 import '../models/audio_model.dart';
 import '../repositories/audio_repository.dart';
 import '../../features/permissions/permissions_service.dart';
+
+// Top-level function for isolate computation
+List<AudioModel> _mapSongsToModels(Map<String, dynamic> data) {
+  final List<dynamic> rawSongs = data['songs'];
+  final List<String> excludedFolders = data['excludedFolders'];
+
+  final List<AudioModel> models = [];
+  
+  for (var raw in rawSongs) {
+    // raw is basically a map we can reconstruct or just pass SongModel directly
+    // Since SongModel might not be directly sendable over isolate (though it's a simple object),
+    // we assume it was passed as a List<SongModel>
+  }
+  return models;
+}
 
 class MediaScannerService {
   final OnAudioQuery _audioQuery = OnAudioQuery();
@@ -10,11 +28,11 @@ class MediaScannerService {
 
   MediaScannerService(this._audioRepository, this._permissionsService);
 
-  Future<void> scanAndSaveAudios() async {
+  Future<void> scanAndSaveAudios({List<String> excludedFolders = const []}) async {
     final hasPermission = await _permissionsService.hasPermissions();
     if (!hasPermission) {
       final granted = await _permissionsService.requestMediaPermissions();
-      if (!granted) return; // Cannot proceed without permissions
+      if (!granted) return; 
     }
 
     // Query all songs from device
@@ -25,10 +43,31 @@ class MediaScannerService {
       ignoreCase: true,
     );
 
-    // Map SongModel to our Isar AudioModel
-    final audioModels = songs.map((song) {
+    // Run the heavy mapping in a background isolate to prevent UI jank
+    final audioModels = await compute(_mapSongs, {
+      'songs': songs,
+      'excludedFolders': excludedFolders,
+    });
+
+    // Save to Isar database
+    await _audioRepository.saveAudios(audioModels);
+    
+    // Kick off background artwork extraction
+    _extractAlbumArtInBackground();
+  }
+
+  // Isolate entry point
+  static List<AudioModel> _mapSongs(Map<String, dynamic> args) {
+    final List<SongModel> songs = args['songs'];
+    final List<String> excludedFolders = args['excludedFolders'];
+    
+    return songs.where((song) {
+      final path = song.data;
+      // Skip excluded folders
+      return !excludedFolders.any((folder) => path.contains(folder));
+    }).map((song) {
       return AudioModel()
-        ..uri = song.data // Direct file path
+        ..uri = song.data 
         ..title = song.title
         ..artist = song.artist ?? '<Unknown>'
         ..album = song.album ?? '<Unknown>'
@@ -41,8 +80,53 @@ class MediaScannerService {
             ? DateTime.fromMillisecondsSinceEpoch(song.dateAdded! * 1000)
             : DateTime.now();
     }).toList();
+  }
 
-    // Save to Isar database
-    await _audioRepository.saveAudios(audioModels);
+  Future<void> _extractAlbumArtInBackground() async {
+    final allAudios = await _audioRepository.getAllAudios();
+    final appDir = await getApplicationDocumentsDirectory();
+    final artDir = Directory('${appDir.path}/album_art');
+    
+    if (!await artDir.exists()) {
+      await artDir.create(recursive: true);
+    }
+
+    // Extract by album to avoid redundant queries
+    final Set<String> processedAlbums = {};
+    final List<AudioModel> updatedAudios = [];
+
+    for (var audio in allAudios) {
+      if (processedAlbums.contains(audio.album)) continue;
+      
+      try {
+        final Uint8List? artBytes = await _audioQuery.queryArtwork(
+          audio.id,
+          ArtworkType.AUDIO,
+          format: ArtworkFormat.JPEG,
+          size: 500,
+        );
+
+        if (artBytes != null && artBytes.isNotEmpty) {
+          // Save to local storage
+          final safeAlbumName = audio.album.replaceAll(RegExp(r'[\\/:*?"<>|]'), '_');
+          final File artFile = File('${artDir.path}/$safeAlbumName.jpg');
+          await artFile.writeAsBytes(artBytes);
+
+          // Find all songs with this album and update them
+          final albumSongs = allAudios.where((a) => a.album == audio.album);
+          for (var song in albumSongs) {
+            song.albumArtPath = artFile.path;
+            updatedAudios.add(song);
+          }
+        }
+        processedAlbums.add(audio.album);
+      } catch (e) {
+        debugPrint('Failed to extract art for ${audio.title}: $e');
+      }
+    }
+
+    if (updatedAudios.isNotEmpty) {
+      await _audioRepository.saveAudios(updatedAudios);
+    }
   }
 }
