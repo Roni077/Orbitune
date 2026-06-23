@@ -1,0 +1,65 @@
+name: Windows Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Test and Analyze
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Analyze project source
+        run: flutter analyze
+      - name: Run tests
+        run: flutter test
+
+  build-debug:
+    name: Build Debug Windows
+    needs: test
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Build Windows Debug
+        run: flutter build windows --debug
+      - name: Upload Windows Debug Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: orbitune-windows-debug
+          path: build/windows/x64/runner/Debug/
+
+  build-release:
+    name: Build Release Windows
+    needs: build-debug
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Build Windows Release
+        run: flutter build windows --release
+      - name: Upload Windows Release Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: orbitune-windows-release
+          path: build/windows/x64/runner/Release/

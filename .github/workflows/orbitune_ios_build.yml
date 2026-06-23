@@ -1,0 +1,65 @@
+name: iOS Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Test and Analyze
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Analyze project source
+        run: flutter analyze
+      - name: Run tests
+        run: flutter test
+
+  build-debug:
+    name: Build Debug iOS
+    needs: test
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Build iOS Debug (unsigned)
+        run: flutter build ios --debug --no-codesign
+      - name: Upload iOS Debug Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: orbitune-ios-debug-app
+          path: build/ios/iphoneos/Runner.app
+
+  build-release:
+    name: Build Release iOS
+    needs: build-debug
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Build iOS Release (unsigned)
+        run: flutter build ios --release --no-codesign
+      - name: Upload iOS Release Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: orbitune-ios-release-app
+          path: build/ios/iphoneos/Runner.app
