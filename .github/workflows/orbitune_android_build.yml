@@ -43,11 +43,18 @@ jobs:
         run: flutter pub get
       - name: Build Debug APK
         run: flutter build apk --debug --split-per-abi
+      - name: Rename Debug APKs
+        run: |
+          cd build/app/outputs/flutter-apk/
+          for file in app-*-debug.apk; do
+            arch=$(echo $file | sed 's/app-\(.*\)-debug\.apk/\1/')
+            mv "$file" "orbitune_${arch}_debug.apk"
+          done
       - name: Upload Android Debug Artifact
         uses: actions/upload-artifact@v4
         with:
           name: orbitune-android-debug-apks
-          path: build/app/outputs/flutter-apk/*-debug.apk
+          path: build/app/outputs/flutter-apk/orbitune_*_debug.apk
 
   build-release:
     name: Build Release APK
@@ -82,8 +89,15 @@ jobs:
         shell: bash
       - name: Build Release APK
         run: flutter build apk --release --split-per-abi
+      - name: Rename Release APKs
+        run: |
+          cd build/app/outputs/flutter-apk/
+          for file in app-*-release.apk; do
+            arch=$(echo $file | sed 's/app-\(.*\)-release\.apk/\1/')
+            mv "$file" "orbitune_${arch}_release.apk"
+          done
       - name: Upload Android Release Artifact
         uses: actions/upload-artifact@v4
         with:
           name: orbitune-android-release-apks
-          path: build/app/outputs/flutter-apk/*-release.apk
+          path: build/app/outputs/flutter-apk/orbitune_*_release.apk
