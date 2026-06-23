@@ -136,6 +136,29 @@ class OrbituneAudioHandler extends BaseAudioHandler with SeekHandler {
     queue.add(newQueue);
   }
 
+  Future<void> moveQueueItem(int oldIndex, int newIndex) async {
+    if (oldIndex < 0 || oldIndex >= queue.value.length) return;
+    if (newIndex < 0 || newIndex >= queue.value.length) return;
+
+    await _playlist.move(oldIndex, newIndex);
+    
+    final newQueue = List<MediaItem>.from(queue.value);
+    final item = newQueue.removeAt(oldIndex);
+    newQueue.insert(newIndex, item);
+    queue.add(newQueue);
+  }
+
+  Future<void> insertQueueItem(int index, MediaItem item) async {
+    if (index < 0) index = 0;
+    if (index > queue.value.length) index = queue.value.length;
+
+    await _playlist.insert(index, _createAudioSource(item));
+    
+    final newQueue = List<MediaItem>.from(queue.value);
+    newQueue.insert(index, item);
+    queue.add(newQueue);
+  }
+
   @override
   Future<void> playMediaItem(MediaItem mediaItem) async {
     final index = queue.value.indexWhere((item) => item.id == mediaItem.id);

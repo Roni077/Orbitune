@@ -11,6 +11,7 @@ import 'features/player/orbitune_audio_handler.dart';
 import 'features/player/player_providers.dart';
 import 'core/providers.dart';
 import 'data/models/audio_model.dart';
+import 'data/models/playlist_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,7 +30,7 @@ void main() async {
   // Initialize Isar
   final dir = await getApplicationDocumentsDirectory();
   final isar = await Isar.open(
-    [AudioModelSchema],
+    [AudioModelSchema, PlaylistModelSchema],
     directory: dir.path,
   );
   

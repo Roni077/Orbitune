@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 import '../data/repositories/audio_repository.dart';
+import '../data/repositories/playlist_repository.dart';
 import '../data/services/media_scanner_service.dart';
 import '../features/permissions/permissions_service.dart';
 
@@ -17,6 +18,11 @@ final permissionsServiceProvider = Provider<PermissionsService>((ref) {
 final audioRepositoryProvider = Provider<AudioRepository>((ref) {
   final isar = ref.watch(isarProvider);
   return AudioRepository(isar);
+});
+
+final playlistRepositoryProvider = Provider<PlaylistRepository>((ref) {
+  final isar = ref.watch(isarProvider);
+  return PlaylistRepository(isar);
 });
 
 final mediaScannerServiceProvider = Provider<MediaScannerService>((ref) {

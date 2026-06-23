@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:go_router/go_router.dart';
-import '../player_providers.dart';
+import 'player_providers.dart';
 import 'widgets/waveform_seek_bar.dart';
 import 'widgets/advanced_controls.dart';
 import 'widgets/lyrics_view.dart';
+import '../queue/queue_sheet.dart';
 
 class PlayerScreen extends ConsumerWidget {
   const PlayerScreen({super.key});
@@ -55,6 +56,12 @@ class PlayerScreen extends ConsumerWidget {
             onPressed: () => context.pop(),
           ),
           actions: [
+            IconButton(
+              icon: const Icon(Icons.queue_music),
+              onPressed: () {
+                showQueueSheet(context);
+              },
+            ),
             IconButton(
               icon: const Icon(Icons.more_vert),
               onPressed: () {

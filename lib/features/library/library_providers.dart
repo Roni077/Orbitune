@@ -30,3 +30,24 @@ final artistsProvider = Provider.autoDispose<List<String>>((ref) {
 
 // Status of the media scanner
 final isScanningProvider = StateProvider<bool>((ref) => false);
+
+// Multi-select state
+final selectedSongsProvider = StateNotifierProvider<SelectedSongsNotifier, Set<String>>((ref) {
+  return SelectedSongsNotifier();
+});
+
+class SelectedSongsNotifier extends StateNotifier<Set<String>> {
+  SelectedSongsNotifier() : super({});
+
+  void toggle(String uri) {
+    if (state.contains(uri)) {
+      state = {...state}..remove(uri);
+    } else {
+      state = {...state, uri};
+    }
+  }
+
+  void clear() => state = {};
+  
+  void selectAll(List<String> uris) => state = uris.toSet();
+}

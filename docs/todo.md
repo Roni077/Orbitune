@@ -62,13 +62,13 @@
 - [x] Add Instant Search (Search songs, albums, artists, playlists) with Search History.
 
 ## Phase 8: Advanced Player Experience & Gestures
-- [ ] Build `MiniPlayer` widget positioned above the bottom navigation bar.
-- [ ] Build Full `PlayerScreen` with Hero animation transition.
-- [ ] Add dynamic blurred background based on current album art & HD Artwork Viewer.
-- [ ] Build high-fidelity waveform/seek bar.
-- [ ] Integrate Pitch Control and Playback Speed sliders.
-- [ ] Implement embedded Lyrics viewer (LRC Support, Synchronized Lyrics, Full Screen Mode).
-- [ ] Implement Gesture System: Swipe to change track, double tap actions, long press menus, custom gesture mapping.
+- [x] Build `MiniPlayer` widget positioned above the bottom navigation bar.
+- [x] Build Full `PlayerScreen` with Hero animation transition.
+- [x] Add dynamic blurred background based on current album art & HD Artwork Viewer.
+- [x] Build high-fidelity waveform/seek bar.
+- [x] Integrate Pitch Control and Playback Speed sliders.
+- [x] Implement embedded Lyrics viewer (LRC Support, Synchronized Lyrics, Full Screen Mode).
+- [x] Implement Gesture System: Swipe to change track, double tap actions, long press menus, custom gesture mapping.
 
 ## Phase 9: Playlists & Queue Management
 - [ ] Build Playlists UI: Create, Edit, Delete, Smart Playlists, Import/Export Playlists.

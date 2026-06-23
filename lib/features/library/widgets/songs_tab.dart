@@ -11,6 +11,8 @@ class SongsTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final songsAsync = ref.watch(songsStreamProvider);
+    final selectedSongs = ref.watch(selectedSongsProvider);
+    final isMultiSelectMode = selectedSongs.isNotEmpty;
 
     return songsAsync.when(
       data: (songs) {
@@ -22,31 +24,58 @@ class SongsTab extends ConsumerWidget {
           items: songs,
           titleExtractor: (song) => song.title,
           itemBuilder: (context, index, song) {
+            final isSelected = selectedSongs.contains(song.uri);
+            final theme = Theme.of(context);
+
             return ListTile(
-              leading: GlassContainer(
-                width: 50,
-                height: 50,
-                borderRadius: BorderRadius.circular(8),
-                child: song.albumArtPath != null && song.albumArtPath!.isNotEmpty
-                    ? ClipRRect(
+              selected: isSelected,
+              selectedTileColor: theme.colorScheme.primary.withValues(alpha: 0.1),
+              leading: Stack(
+                alignment: Alignment.center,
+                children: [
+                  GlassContainer(
+                    width: 50,
+                    height: 50,
+                    borderRadius: BorderRadius.circular(8),
+                    child: song.albumArtPath != null && song.albumArtPath!.isNotEmpty
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.file(
+                              File(song.albumArtPath!),
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : const Icon(Icons.music_note, color: Colors.white54),
+                  ),
+                  if (isSelected)
+                    Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primary.withValues(alpha: 0.5),
                         borderRadius: BorderRadius.circular(8),
-                        child: Image.file(
-                          File(song.albumArtPath!),
-                          fit: BoxFit.cover,
-                        ),
-                      )
-                    : const Icon(Icons.music_note, color: Colors.white54),
+                      ),
+                      child: const Icon(Icons.check, color: Colors.white),
+                    ),
+                ],
               ),
               title: Text(song.title, maxLines: 1, overflow: TextOverflow.ellipsis),
               subtitle: Text(song.artist, maxLines: 1, overflow: TextOverflow.ellipsis),
-              trailing: IconButton(
+              trailing: isMultiSelectMode ? null : IconButton(
                 icon: const Icon(Icons.more_vert),
                 onPressed: () {
                   // TODO: Show context menu
                 },
               ),
+              onLongPress: () {
+                ref.read(selectedSongsProvider.notifier).toggle(song.uri);
+              },
               onTap: () {
-                // TODO: Play song using audioHandler
+                if (isMultiSelectMode) {
+                  ref.read(selectedSongsProvider.notifier).toggle(song.uri);
+                } else {
+                  // TODO: Play song using audioHandler
+                }
               },
             );
           },
