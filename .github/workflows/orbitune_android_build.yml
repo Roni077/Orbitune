@@ -71,7 +71,7 @@ jobs:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
         run: |
           $keystoreBytes = [System.Convert]::FromBase64String($env:KEYSTORE_BASE64)
-          [System.IO.File]::WriteAllBytes("android/upload-keystore.jks", $keystoreBytes)
+          [System.IO.File]::WriteAllBytes("android/app/upload-keystore.jks", $keystoreBytes)
         shell: pwsh
       - name: Create key.properties
         run: |
