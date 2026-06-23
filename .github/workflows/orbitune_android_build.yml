@@ -50,11 +50,16 @@ jobs:
             arch=$(echo $file | sed 's/app-\(.*\)-debug\.apk/\1/')
             mv "$file" "orbitune_${arch}_debug.apk"
           done
-      - name: Upload Android Debug Artifact
+      - name: Upload arm64-v8a Debug
         uses: actions/upload-artifact@v4
         with:
-          name: orbitune-android-debug-apks
-          path: build/app/outputs/flutter-apk/orbitune_*_debug.apk
+          name: orbitune_arm64-v8a_debug
+          path: build/app/outputs/flutter-apk/orbitune_arm64-v8a_debug.apk
+      - name: Upload armeabi-v7a Debug
+        uses: actions/upload-artifact@v4
+        with:
+          name: orbitune_armeabi-v7a_debug
+          path: build/app/outputs/flutter-apk/orbitune_armeabi-v7a_debug.apk
 
   build-release:
     name: Build Release APK
@@ -96,8 +101,13 @@ jobs:
             arch=$(echo $file | sed 's/app-\(.*\)-release\.apk/\1/')
             mv "$file" "orbitune_${arch}_release.apk"
           done
-      - name: Upload Android Release Artifact
+      - name: Upload arm64-v8a Release
         uses: actions/upload-artifact@v4
         with:
-          name: orbitune-android-release-apks
-          path: build/app/outputs/flutter-apk/orbitune_*_release.apk
+          name: orbitune_arm64-v8a_release
+          path: build/app/outputs/flutter-apk/orbitune_arm64-v8a_release.apk
+      - name: Upload armeabi-v7a Release
+        uses: actions/upload-artifact@v4
+        with:
+          name: orbitune_armeabi-v7a_release
+          path: build/app/outputs/flutter-apk/orbitune_armeabi-v7a_release.apk
