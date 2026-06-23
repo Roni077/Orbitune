@@ -5,6 +5,7 @@ import '../features/home/home_screen.dart';
 import '../features/library/library_screen.dart';
 import '../features/settings/settings_screen.dart';
 import '../features/search/search_screen.dart';
+import '../features/player/player_screen.dart';
 import '../shared/scaffold_with_nav_bar.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -48,8 +49,13 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/search',
-      parentNavigatorKey: _rootNavigatorKey, // Overlay over the bottom nav bar
+      parentNavigatorKey: _rootNavigatorKey,
       builder: (context, state) => const SearchScreen(),
+    ),
+    GoRoute(
+      path: '/player',
+      parentNavigatorKey: _rootNavigatorKey,
+      builder: (context, state) => const PlayerScreen(),
     ),
   ],
 );

@@ -111,6 +111,15 @@ class OrbituneAudioHandler extends BaseAudioHandler with SeekHandler {
   }
 
   @override
+  Future<void> setSpeed(double speed) async {
+    await _player.setSpeed(speed);
+  }
+
+  Future<void> setPitch(double pitch) async {
+    await _player.setPitch(pitch);
+  }
+
+  @override
   Future<void> addQueueItems(List<MediaItem> mediaItems) async {
     final audioSources = mediaItems.map(_createAudioSource).toList();
     await _playlist.addAll(audioSources);
