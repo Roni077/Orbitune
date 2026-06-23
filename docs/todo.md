@@ -44,13 +44,13 @@
 - [x] Auto-extract Album Art and Artist Information during scanning.
 
 ## Phase 6: Player Engine & Background Playback
-- [ ] Create `OrbituneAudioHandler` extending `BaseAudioHandler` using `just_audio`.
-- [ ] Support audio formats: MP3, FLAC, WAV, AAC, OGG, M4A, OPUS.
-- [ ] Implement core playback: gapless playback, crossfade playback, play, pause, stop, next, previous, seek.
-- [ ] Configure `AudioSession` for OS audio focus handling.
-- [ ] Setup Foreground Service, Media Style Notification, and Lock Screen Controls (Android/iOS Control Center).
-- [ ] Implement Sleep Timer and Resume Playback functionality.
-- [ ] Create Riverpod providers: `playbackStateProvider`, `currentSongProvider`, `queueProvider`.
+- [x] Create `OrbituneAudioHandler` extending `BaseAudioHandler` using `just_audio`.
+- [x] Support audio formats: MP3, FLAC, WAV, AAC, OGG, M4A, OPUS.
+- [x] Implement core playback: gapless playback, crossfade playback, play, pause, stop, next, previous, seek.
+- [x] Configure `AudioSession` for OS audio focus handling.
+- [x] Setup Foreground Service, Media Style Notification, and Lock Screen Controls (Android/iOS Control Center).
+- [x] Implement Sleep Timer and Resume Playback functionality.
+- [x] Create Riverpod providers: `playbackStateProvider`, `currentSongProvider`, `queueProvider`.
 
 ## Phase 7: UI Implementation - Home & Library
 - [ ] Build Home Screen: "Recently Added", "Most Played", and "Usage Dashboard" (Analytics).
