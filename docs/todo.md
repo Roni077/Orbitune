@@ -1,15 +1,15 @@
 # Orbitune Phase-by-Phase Execution Todo
 
 ## Phase 1: Foundation & Dependencies 
-- [ ] Initialize `docs/` folder and documentation.
-- [ ] Clean up default `lib/main.dart` and `pubspec.yaml`.
-- [ ] Add all core dependencies to `pubspec.yaml` (Riverpod, GoRouter, Isar, Hive, Just Audio, Audio Service, Freezed, etc.).
-- [ ] Setup `build_runner` and generate initial code.
-- [ ] Scaffold the clean architecture folder structure inside `lib/`.
-- [ ] Initialize `GetIt` locator and Riverpod `ProviderScope`.
-- [ ] Configure Android `AndroidManifest.xml` (Android 8+, Android 15 ready, no internet permission).
-- [ ] Configure iOS `Info.plist` (Background audio).
-- [ ] Configure native splash screen (`flutter_native_splash`).
+- [x] Initialize `docs/` folder and documentation.
+- [x] Clean up default `lib/main.dart` and `pubspec.yaml`.
+- [x] Add all core dependencies to `pubspec.yaml` (Riverpod, GoRouter, Isar, Hive, Just Audio, Audio Service, Freezed, etc.).
+- [x] Setup `build_runner` and generate initial code.
+- [x] Scaffold the clean architecture folder structure inside `lib/`.
+- [x] Initialize `GetIt` locator and Riverpod `ProviderScope`.
+- [x] Configure Android `AndroidManifest.xml` (Android 8+, Android 15 ready, no internet permission).
+- [x] Configure iOS `Info.plist` (Background audio).
+- [x] Configure native splash screen (`flutter_native_splash`).
 
 ## Phase 2: Design System, Theming & Accessibility
 - [ ] Create `lib/themes/app_theme.dart`.
