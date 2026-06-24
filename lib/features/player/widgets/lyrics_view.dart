@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:audio_service/audio_service.dart';
 import '../../../data/services/lyrics_service.dart';
-import '../player_providers.dart';
 
 final lyricsServiceProvider = Provider((ref) => LyricsService());
 

@@ -1,5 +1,4 @@
 import 'package:isar/isar.dart';
-import 'audio_model.dart';
 
 part 'playlist_model.g.dart';
 

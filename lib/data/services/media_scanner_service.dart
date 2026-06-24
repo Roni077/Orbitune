@@ -6,21 +6,6 @@ import '../models/audio_model.dart';
 import '../repositories/audio_repository.dart';
 import '../../features/permissions/permissions_service.dart';
 
-// Top-level function for isolate computation
-List<AudioModel> _mapSongsToModels(Map<String, dynamic> data) {
-  final List<dynamic> rawSongs = data['songs'];
-  final List<String> excludedFolders = data['excludedFolders'];
-
-  final List<AudioModel> models = [];
-  
-  for (var raw in rawSongs) {
-    // raw is basically a map we can reconstruct or just pass SongModel directly
-    // Since SongModel might not be directly sendable over isolate (though it's a simple object),
-    // we assume it was passed as a List<SongModel>
-  }
-  return models;
-}
-
 class MediaScannerService {
   final OnAudioQuery _audioQuery = OnAudioQuery();
   final AudioRepository _audioRepository;
@@ -74,7 +59,7 @@ class MediaScannerService {
         ..displayName = song.displayName
         ..durationMs = song.duration ?? 0
         ..trackNumber = song.track ?? 0
-        ..sizeBytes = song.size ?? 0
+        ..sizeBytes = song.size
         ..genre = song.genre
         ..dateAdded = song.dateAdded != null 
             ? DateTime.fromMillisecondsSinceEpoch(song.dateAdded! * 1000)

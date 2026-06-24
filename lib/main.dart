@@ -85,8 +85,8 @@ class OrbituneApp extends ConsumerWidget {
                 audioHandler.play();
               }
             },
-            const SingleActivator(LogicalKeyboardKey.mediaNextTrack): () => audioHandler.skipToNext(),
-            const SingleActivator(LogicalKeyboardKey.mediaPreviousTrack): () => audioHandler.skipToPrevious(),
+            const SingleActivator(LogicalKeyboardKey.mediaTrackNext): () => audioHandler.skipToNext(),
+            const SingleActivator(LogicalKeyboardKey.mediaTrackPrevious): () => audioHandler.skipToPrevious(),
             const SingleActivator(LogicalKeyboardKey.space, control: true): () {
               if (audioHandler.playbackState.value.playing) {
                 audioHandler.pause();
