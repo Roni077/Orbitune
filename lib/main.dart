@@ -104,7 +104,7 @@ class OrbituneApp extends ConsumerWidget {
               theme: theme,
               darkTheme: darkTheme,
               themeMode: ref.read(themeProvider.notifier).themeMode,
-              routerConfig: appRouter,
+              routerConfig: ref.watch(routerProvider),
             ),
           ),
         );

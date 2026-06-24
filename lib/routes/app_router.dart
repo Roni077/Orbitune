@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../features/home/home_screen.dart';
 import '../features/library/library_screen.dart';
@@ -11,15 +12,38 @@ import '../features/settings/screens/appearance_screen.dart';
 import '../features/settings/screens/playback_screen.dart';
 import '../features/settings/screens/data_screen.dart';
 import '../features/settings/screens/about_screen.dart';
+import '../features/onboarding/onboarding_screen.dart';
+import '../features/onboarding/onboarding_provider.dart';
 import '../shared/scaffold_with_nav_bar.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> _shellNavigatorSettingsKey = GlobalKey<NavigatorState>();
 
-final GoRouter appRouter = GoRouter(
-  navigatorKey: _rootNavigatorKey,
-  initialLocation: '/home',
-  routes: [
+final routerProvider = Provider<GoRouter>((ref) {
+  final onboardingCompleted = ref.watch(onboardingCompletedProvider);
+
+  return GoRouter(
+    navigatorKey: _rootNavigatorKey,
+    initialLocation: '/home',
+    redirect: (context, state) {
+      final isOnboardingRoute = state.matchedLocation == '/onboarding';
+      
+      if (!onboardingCompleted) {
+        return isOnboardingRoute ? null : '/onboarding';
+      }
+
+      if (isOnboardingRoute && onboardingCompleted) {
+        return '/home';
+      }
+
+      return null;
+    },
+    routes: [
+      GoRoute(
+        path: '/onboarding',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const OnboardingScreen(),
+      ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
         return ScaffoldWithNavBar(navigationShell: navigationShell);
@@ -87,3 +111,4 @@ final GoRouter appRouter = GoRouter(
     ),
   ],
 );
+});

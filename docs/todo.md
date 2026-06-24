@@ -94,3 +94,9 @@
 - [x] Configure `flutter_launcher_icons`.
 - [x] Run Dart DevTools for memory profiling and FPS optimization.
 - [x] Write unit, widget, and integration tests.
+
+## Phase 13: Onboarding & First Launch Experience
+- [ ] Build multi-step Onboarding & Setup Screen.
+- [ ] Implement robust Storage & Audio Permission requests during setup.
+- [ ] Update `app_router.dart` to show Onboarding screen on first launch.
+- [ ] Save onboarding completion state in `SharedPreferences`.
