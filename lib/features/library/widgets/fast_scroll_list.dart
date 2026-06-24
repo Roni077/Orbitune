@@ -136,7 +136,7 @@ class _FastScrollListState<T> extends State<FastScrollList<T>> {
                           fontWeight: FontWeight.bold,
                           color: _isDragging && _currentLetter == letter
                               ? theme.colorScheme.primary
-                              : theme.colorScheme.onSurface.withOpacity(0.5),
+                              : theme.colorScheme.onSurface.withValues(alpha: 0.5),
                         ),
                       );
                     }).toList(),

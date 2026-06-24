@@ -30,10 +30,13 @@ class AppearanceSettingsScreen extends ConsumerWidget {
             child: Text('Theme Mode', style: TextStyle(fontWeight: FontWeight.bold)),
           ),
           ...ThemeType.values.map((type) {
+            // ignore: deprecated_member_use
             return RadioListTile<ThemeType>(
               title: Text(type.name[0].toUpperCase() + type.name.substring(1)),
               value: type,
+              // ignore: deprecated_member_use
               groupValue: themeState.themeType,
+              // ignore: deprecated_member_use
               onChanged: (ThemeType? value) {
                 if (value != null) {
                   ref.read(themeProvider.notifier).setTheme(value);

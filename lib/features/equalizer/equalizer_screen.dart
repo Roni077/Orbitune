@@ -53,7 +53,8 @@ class _EqualizerScreenState extends ConsumerState<EqualizerScreen> {
                     prefs.setBool('eq_enabled', val);
                   },
                   contentPadding: EdgeInsets.zero,
-                  activeColor: theme.colorScheme.primary,
+                  activeTrackColor: theme.colorScheme.primary.withValues(alpha: 0.5),
+                  activeThumbColor: theme.colorScheme.primary,
                 );
               },
             ),
@@ -144,7 +145,8 @@ class _EqualizerScreenState extends ConsumerState<EqualizerScreen> {
                     prefs.setBool('loudness_enabled', val);
                   },
                   contentPadding: EdgeInsets.zero,
-                  activeColor: theme.colorScheme.primary,
+                  activeTrackColor: theme.colorScheme.primary.withValues(alpha: 0.5),
+                  activeThumbColor: theme.colorScheme.primary,
                 );
               },
             ),

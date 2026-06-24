@@ -54,6 +54,7 @@ class QueueSheet extends ConsumerWidget {
             child: ReorderableListView.builder(
               padding: const EdgeInsets.only(bottom: 24),
               itemCount: queue.length,
+              // ignore: deprecated_member_use
               onReorder: (oldIndex, newIndex) {
                 if (oldIndex < newIndex) {
                   newIndex -= 1;

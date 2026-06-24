@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
+import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -9,6 +10,7 @@ class OrbituneAudioHandler extends BaseAudioHandler with SeekHandler {
   final AndroidLoudnessEnhancer loudnessEnhancer = AndroidLoudnessEnhancer();
   
   late final AudioPlayer _player;
+  // ignore: deprecated_member_use
   final ConcatenatingAudioSource _playlist = ConcatenatingAudioSource(children: []);
   Timer? _sleepTimer;
   final SharedPreferences prefs;
@@ -83,7 +85,7 @@ class OrbituneAudioHandler extends BaseAudioHandler with SeekHandler {
     try {
       await _player.setAudioSource(_playlist);
     } catch (e) {
-      print("Error setting audio source: $e");
+      debugPrint("Error loading audio source: $e");
     }
 
     // Broadcast playback state changes to the OS
@@ -166,11 +168,12 @@ class OrbituneAudioHandler extends BaseAudioHandler with SeekHandler {
   }
 
   @override
-  Future<void> updateQueue(List<MediaItem> newQueue) async {
+  Future<void> updateQueue(List<MediaItem> queue) async {
     await _playlist.clear();
-    final audioSources = newQueue.map(_createAudioSource).toList();
+    final audioSources = queue.map(_createAudioSource).toList();
     await _playlist.addAll(audioSources);
-    queue.add(newQueue);
+    
+    super.queue.add(queue);
   }
 
   Future<void> moveQueueItem(int oldIndex, int newIndex) async {
@@ -185,14 +188,15 @@ class OrbituneAudioHandler extends BaseAudioHandler with SeekHandler {
     queue.add(newQueue);
   }
 
-  Future<void> insertQueueItem(int index, MediaItem item) async {
+  @override
+  Future<void> insertQueueItem(int index, MediaItem mediaItem) async {
     if (index < 0) index = 0;
     if (index > queue.value.length) index = queue.value.length;
 
-    await _playlist.insert(index, _createAudioSource(item));
+    await _playlist.insert(index, _createAudioSource(mediaItem));
     
     final newQueue = List<MediaItem>.from(queue.value);
-    newQueue.insert(index, item);
+    newQueue.insert(index, mediaItem);
     queue.add(newQueue);
   }
 
@@ -205,7 +209,7 @@ class OrbituneAudioHandler extends BaseAudioHandler with SeekHandler {
     }
   }
 
-  UriAudioSource _createAudioSource(MediaItem mediaItem) {
+  AudioSource _createAudioSource(MediaItem mediaItem) {
     return AudioSource.uri(
       Uri.parse(mediaItem.id),
       tag: mediaItem,
