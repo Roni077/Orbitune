@@ -171,11 +171,11 @@ class OrbituneAudioHandler extends BaseAudioHandler with SeekHandler {
   }
 
   @override
-  Future<void> updateQueue(List<MediaItem> queueItems) async {
-    super.queue.add(queueItems);
+  Future<void> updateQueue(List<MediaItem> queue) async {
+    super.queue.add(queue);
 
     await _playlist.clear();
-    final audioSources = queueItems.map(_createAudioSource).toList();
+    final audioSources = queue.map(_createAudioSource).toList();
     await _playlist.addAll(audioSources);
   }
 

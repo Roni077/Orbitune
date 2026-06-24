@@ -25,7 +25,7 @@ class RouterNotifier extends ChangeNotifier {
   RouterNotifier(this._ref) {
     _ref.listen<bool>(
       onboardingCompletedProvider,
-      (_, __) => notifyListeners(),
+      (previous, next) => notifyListeners(),
     );
   }
 }
