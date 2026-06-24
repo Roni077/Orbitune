@@ -22,6 +22,9 @@ subprojects {
             if (androidExt.namespace == null) {
                 androidExt.namespace = project.group.toString()
             }
+            if (project.name == "isar_flutter_libs") {
+                androidExt.compileSdk = 34
+            }
             androidExt.compileOptions {
                 sourceCompatibility = org.gradle.api.JavaVersion.VERSION_17
                 targetCompatibility = org.gradle.api.JavaVersion.VERSION_17
