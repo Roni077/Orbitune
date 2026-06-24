@@ -2,7 +2,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:audio_service/audio_service.dart';
 import '../../core/providers.dart';
+import '../player/player_providers.dart';
 import '../library/library_providers.dart';
 import '../../widgets/glass_container.dart';
 
@@ -88,34 +90,51 @@ class HomeScreen extends ConsumerWidget {
                       itemCount: recentSongs.length,
                       itemBuilder: (context, index) {
                         final song = recentSongs[index];
-                        return Container(
-                          width: 140,
-                          margin: const EdgeInsets.only(right: 16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              GlassContainer(
-                                width: 140,
-                                height: 140,
-                                borderRadius: BorderRadius.circular(16),
-                                child: song.albumArtPath != null && song.albumArtPath!.isNotEmpty
-                                    ? ClipRRect(
-                                        borderRadius: BorderRadius.circular(16),
-                                        child: Image.file(
-                                          File(song.albumArtPath!),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      )
-                                    : const Icon(Icons.music_note, size: 50, color: Colors.white54),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                song.title,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ],
+                        return GestureDetector(
+                          onTap: () async {
+                            final audioHandler = ref.read(audioHandlerProvider);
+                            final queue = recentSongs.map((s) => MediaItem(
+                              id: s.id.toString(),
+                              title: s.title,
+                              artist: s.artist,
+                              album: s.album,
+                              duration: Duration(milliseconds: s.durationMs),
+                              artUri: s.albumArtPath != null ? Uri.file(s.albumArtPath!) : null,
+                              extras: {'uri': s.uri},
+                            )).toList();
+                            
+                            await audioHandler.updateQueue(queue);
+                            await audioHandler.playMediaItem(queue[index]);
+                          },
+                          child: Container(
+                            width: 140,
+                            margin: const EdgeInsets.only(right: 16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                GlassContainer(
+                                  width: 140,
+                                  height: 140,
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: song.albumArtPath != null && song.albumArtPath!.isNotEmpty
+                                      ? ClipRRect(
+                                          borderRadius: BorderRadius.circular(16),
+                                          child: Image.file(
+                                            File(song.albumArtPath!),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        )
+                                      : const Icon(Icons.music_note, size: 50, color: Colors.white54),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  song.title,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       },

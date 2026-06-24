@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:audio_service/audio_service.dart';
 import '../library_providers.dart';
+import '../../player/player_providers.dart';
 import '../../../widgets/glass_container.dart';
 import 'fast_scroll_list.dart';
 
@@ -70,11 +72,23 @@ class SongsTab extends ConsumerWidget {
               onLongPress: () {
                 ref.read(selectedSongsProvider.notifier).toggle(song.uri);
               },
-              onTap: () {
+              onTap: () async {
                 if (isMultiSelectMode) {
                   ref.read(selectedSongsProvider.notifier).toggle(song.uri);
                 } else {
-                  // TODO: Play song using audioHandler
+                  final audioHandler = ref.read(audioHandlerProvider);
+                  final queue = songs.map((s) => MediaItem(
+                    id: s.id.toString(),
+                    title: s.title,
+                    artist: s.artist,
+                    album: s.album,
+                    duration: Duration(milliseconds: s.durationMs),
+                    artUri: s.albumArtPath != null ? Uri.file(s.albumArtPath!) : null,
+                    extras: {'uri': s.uri},
+                  )).toList();
+                  
+                  await audioHandler.updateQueue(queue);
+                  await audioHandler.playMediaItem(queue[index]);
                 }
               },
             );

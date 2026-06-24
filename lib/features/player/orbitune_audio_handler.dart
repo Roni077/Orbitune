@@ -210,8 +210,10 @@ class OrbituneAudioHandler extends BaseAudioHandler with SeekHandler {
   }
 
   AudioSource _createAudioSource(MediaItem mediaItem) {
+    final path = mediaItem.extras?['uri'] as String? ?? mediaItem.id;
+    final uri = path.startsWith('http') ? Uri.parse(path) : Uri.file(path);
     return AudioSource.uri(
-      Uri.parse(mediaItem.id),
+      uri,
       tag: mediaItem,
     );
   }
