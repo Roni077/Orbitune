@@ -16,6 +16,8 @@ class HomeScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final recentlyAddedAsync = ref.watch(recentlyAddedProvider);
     final totalSongsAsync = ref.watch(songsStreamProvider);
+    final albums = ref.watch(albumsProvider);
+    final artists = ref.watch(artistsProvider);
     final isScanning = ref.watch(isScanningProvider);
 
     return Scaffold(
@@ -56,16 +58,13 @@ class HomeScreen extends ConsumerWidget {
               const SizedBox(height: 16),
               totalSongsAsync.when(
                 data: (songs) {
-                  final uniqueArtists = songs.map((s) => s.artist).toSet().length;
-                  final uniqueAlbums = songs.map((s) => s.album).toSet().length;
-
                   return Row(
                     children: [
                       Expanded(child: _buildStatCard(context, 'Songs', songs.length.toString(), Icons.music_note)),
                       const SizedBox(width: 12),
-                      Expanded(child: _buildStatCard(context, 'Artists', uniqueArtists.toString(), Icons.person)),
+                      Expanded(child: _buildStatCard(context, 'Artists', artists.length.toString(), Icons.person)),
                       const SizedBox(width: 12),
-                      Expanded(child: _buildStatCard(context, 'Albums', uniqueAlbums.toString(), Icons.album)),
+                      Expanded(child: _buildStatCard(context, 'Albums', albums.length.toString(), Icons.album)),
                     ],
                   );
                 },
@@ -93,18 +92,29 @@ class HomeScreen extends ConsumerWidget {
                         return GestureDetector(
                           onTap: () async {
                             final audioHandler = ref.read(audioHandlerProvider);
-                            final queue = recentSongs.map((s) => MediaItem(
-                              id: s.id.toString(),
-                              title: s.title,
-                              artist: s.artist,
-                              album: s.album,
-                              duration: Duration(milliseconds: s.durationMs),
-                              artUri: s.albumArtPath != null ? Uri.file(s.albumArtPath!) : null,
-                              extras: {'uri': s.uri},
-                            )).toList();
-                            
-                            await audioHandler.updateQueue(queue);
-                            await audioHandler.playMediaItem(queue[index]);
+                            final currentQueue = audioHandler.queue.value;
+                            final mediaItem = MediaItem(
+                              id: song.id.toString(),
+                              title: song.title,
+                              artist: song.artist,
+                              album: song.album,
+                              duration: Duration(milliseconds: song.durationMs),
+                              artUri: song.albumArtPath != null ? Uri.file(song.albumArtPath!) : null,
+                              extras: {'uri': song.uri},
+                            );
+
+                            if (currentQueue.isEmpty) {
+                              await audioHandler.addQueueItem(mediaItem);
+                              await audioHandler.play();
+                            } else {
+                              final existingIndex = currentQueue.indexWhere((i) => i.id == mediaItem.id);
+                              if (existingIndex != -1) {
+                                await audioHandler.playMediaItem(mediaItem);
+                              } else {
+                                await audioHandler.insertQueueItem(0, mediaItem);
+                                await audioHandler.playMediaItem(mediaItem);
+                              }
+                            }
                           },
                           child: Container(
                             width: 140,

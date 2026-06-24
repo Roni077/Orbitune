@@ -19,13 +19,26 @@ import '../shared/scaffold_with_nav_bar.dart';
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> _shellNavigatorSettingsKey = GlobalKey<NavigatorState>();
 
+class RouterNotifier extends ChangeNotifier {
+  final Ref _ref;
+
+  RouterNotifier(this._ref) {
+    _ref.listen<bool>(
+      onboardingCompletedProvider,
+      (_, __) => notifyListeners(),
+    );
+  }
+}
+
 final routerProvider = Provider<GoRouter>((ref) {
-  final onboardingCompleted = ref.watch(onboardingCompletedProvider);
+  final notifier = RouterNotifier(ref);
 
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/home',
+    refreshListenable: notifier,
     redirect: (context, state) {
+      final onboardingCompleted = ref.read(onboardingCompletedProvider);
       final isOnboardingRoute = state.matchedLocation == '/onboarding';
       
       if (!onboardingCompleted) {

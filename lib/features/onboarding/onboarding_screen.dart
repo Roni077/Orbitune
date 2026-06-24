@@ -38,6 +38,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     final permsService = ref.read(permissionsServiceProvider);
     final granted = await permsService.requestMediaPermissions();
 
+    if (!mounted) return;
+
     setState(() => _isRequestingPermission = false);
 
     if (granted) {

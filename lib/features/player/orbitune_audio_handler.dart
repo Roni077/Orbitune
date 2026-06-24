@@ -14,6 +14,7 @@ class OrbituneAudioHandler extends BaseAudioHandler with SeekHandler {
   final ConcatenatingAudioSource _playlist = ConcatenatingAudioSource(children: []);
   Timer? _sleepTimer;
   final SharedPreferences prefs;
+  double _preDuckVolume = 1.0;
 
   OrbituneAudioHandler(this.prefs) {
     _player = AudioPlayer(
@@ -61,6 +62,7 @@ class OrbituneAudioHandler extends BaseAudioHandler with SeekHandler {
       if (event.begin) {
         switch (event.type) {
           case AudioInterruptionType.duck:
+            _preDuckVolume = _player.volume;
             _player.setVolume(0.5);
             break;
           case AudioInterruptionType.pause:
@@ -71,7 +73,7 @@ class OrbituneAudioHandler extends BaseAudioHandler with SeekHandler {
       } else {
         switch (event.type) {
           case AudioInterruptionType.duck:
-            _player.setVolume(1.0);
+            _player.setVolume(_preDuckVolume);
             break;
           case AudioInterruptionType.pause:
             play();

@@ -28,8 +28,8 @@ class MediaScannerService {
       ignoreCase: true,
     );
 
-    // Run the heavy mapping in a background isolate to prevent UI jank
-    final audioModels = await compute(_mapSongs, {
+    // Run mapping directly instead of via compute() to avoid heavy serialization overhead
+    final audioModels = _mapSongs({
       'songs': songs,
       'excludedFolders': excludedFolders,
     });
@@ -37,11 +37,11 @@ class MediaScannerService {
     // Save to Isar database
     await _audioRepository.saveAudios(audioModels);
     
-    // Kick off background artwork extraction
-    _extractAlbumArtInBackground();
+    // Kick off background artwork extraction and await it so the UI RefreshIndicator knows when it's done
+    await _extractAlbumArtInBackground();
   }
 
-  // Isolate entry point
+  // Mapper entry point
   static List<AudioModel> _mapSongs(Map<String, dynamic> args) {
     final List<SongModel> songs = args['songs'];
     final List<String> excludedFolders = args['excludedFolders'];
@@ -80,9 +80,16 @@ class MediaScannerService {
     final Set<String> processedAlbums = {};
     final List<AudioModel> updatedAudios = [];
 
+    int processedCount = 0;
+
     for (var audio in allAudios) {
       if (processedAlbums.contains(audio.album)) continue;
       
+      // Yield to the event loop every 5 iterations to prevent UI stutter
+      if (processedCount++ % 5 == 0) {
+        await Future.delayed(Duration.zero);
+      }
+
       try {
         final Uint8List? artBytes = await _audioQuery.queryArtwork(
           audio.id,

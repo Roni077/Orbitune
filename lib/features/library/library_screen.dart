@@ -50,20 +50,17 @@ class LibraryScreen extends ConsumerWidget {
                       final allSongs = ref.read(songsStreamProvider).valueOrNull ?? [];
                       final selectedSongsList = allSongs.where((s) => selectedSongs.contains(s.uri)).toList();
                       
-                      final queue = audioHandler.queue.value;
+                      final mediaItems = selectedSongsList.map((song) => MediaItem(
+                        id: song.id.toString(),
+                        title: song.title,
+                        artist: song.artist,
+                        album: song.album,
+                        duration: Duration(milliseconds: song.durationMs),
+                        artUri: song.albumArtPath != null ? Uri.file(song.albumArtPath!) : null,
+                        extras: {'uri': song.uri},
+                      )).toList();
                       
-                      for (final song in selectedSongsList) {
-                        final mediaItem = MediaItem(
-                          id: song.id.toString(),
-                          title: song.title,
-                          artist: song.artist,
-                          album: song.album,
-                          duration: Duration(milliseconds: song.durationMs),
-                          artUri: song.albumArtPath != null ? Uri.file(song.albumArtPath!) : null,
-                          extras: {'uri': song.uri},
-                        );
-                        await audioHandler.insertQueueItem(queue.length, mediaItem);
-                      }
+                      await audioHandler.addQueueItems(mediaItems);
                       
                       ref.read(selectedSongsProvider.notifier).clear();
                       if (context.mounted) {
