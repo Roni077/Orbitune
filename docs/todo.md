@@ -77,14 +77,17 @@
 - [x] Build multi-select functionality across all lists.
 
 ## Phase 10: Audio Enhancement (Equalizer)
-- [ ] Implement `AndroidEqualizer` logic using `just_audio` pipelines.
-- [ ] Build Equalizer UI (Frequency bands, Bass Boost, Virtualizer).
-- [ ] Implement Preset Manager (Save/load custom presets).
+- [x] Implement `AndroidEqualizer` logic using `just_audio` pipelines.
+- [x] Build 5-band or 10-band Equalizer UI.
+- [x] Add pre-configured EQ presets (Pop, Rock, Classical, Bass Boost, etc.).
+- [x] Implement global audio effects (Reverb, Virtualizer/3D Audio, Bass Boost, Loudness Enhancer).
 
 ## Phase 11: Settings & Backup System
-- [ ] Build Settings Screen (Theme Selection, Dynamic Color Toggle, Audio Quality).
-- [ ] Implement Backup & Restore functionality (Export/Import settings, Export playlists, Restore data).
-- [ ] Build Analytics Dashboard (Local playback stats, listening history).
+- [x] Build Settings Screen (Theme Selection, Dynamic Color Toggle, Audio Quality).
+- [x] Implement About & Licenses section.
+- [x] Build Isar database Backup & Restore functionality (JSON or raw DB copy).
+- [x] Build app-wide sleep timer UI integration (if not done in Phase 7).
+- [x] Build Analytics Dashboard (Local playback stats, listening history).
 
 ## Phase 12: Final Polish & Desktop Support
 - [ ] Windows Support: Implement keyboard shortcuts, adaptive desktop layout, drag & drop music files, system media controls.
