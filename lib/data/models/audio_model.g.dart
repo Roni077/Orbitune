@@ -52,28 +52,33 @@ const AudioModelSchema = CollectionSchema(
       name: r'genre',
       type: IsarType.string,
     ),
-    r'sizeBytes': PropertySchema(
+    r'mediaStoreId': PropertySchema(
       id: 7,
+      name: r'mediaStoreId',
+      type: IsarType.long,
+    ),
+    r'sizeBytes': PropertySchema(
+      id: 8,
       name: r'sizeBytes',
       type: IsarType.long,
     ),
     r'title': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'title',
       type: IsarType.string,
     ),
     r'trackNumber': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'trackNumber',
       type: IsarType.long,
     ),
     r'uri': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'uri',
       type: IsarType.string,
     ),
     r'year': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'year',
       type: IsarType.long,
     )
@@ -158,11 +163,12 @@ void _audioModelSerialize(
   writer.writeString(offsets[4], object.displayName);
   writer.writeLong(offsets[5], object.durationMs);
   writer.writeString(offsets[6], object.genre);
-  writer.writeLong(offsets[7], object.sizeBytes);
-  writer.writeString(offsets[8], object.title);
-  writer.writeLong(offsets[9], object.trackNumber);
-  writer.writeString(offsets[10], object.uri);
-  writer.writeLong(offsets[11], object.year);
+  writer.writeLong(offsets[7], object.mediaStoreId);
+  writer.writeLong(offsets[8], object.sizeBytes);
+  writer.writeString(offsets[9], object.title);
+  writer.writeLong(offsets[10], object.trackNumber);
+  writer.writeString(offsets[11], object.uri);
+  writer.writeLong(offsets[12], object.year);
 }
 
 AudioModel _audioModelDeserialize(
@@ -180,11 +186,12 @@ AudioModel _audioModelDeserialize(
   object.durationMs = reader.readLong(offsets[5]);
   object.genre = reader.readStringOrNull(offsets[6]);
   object.id = id;
-  object.sizeBytes = reader.readLong(offsets[7]);
-  object.title = reader.readString(offsets[8]);
-  object.trackNumber = reader.readLong(offsets[9]);
-  object.uri = reader.readString(offsets[10]);
-  object.year = reader.readLongOrNull(offsets[11]);
+  object.mediaStoreId = reader.readLongOrNull(offsets[7]);
+  object.sizeBytes = reader.readLong(offsets[8]);
+  object.title = reader.readString(offsets[9]);
+  object.trackNumber = reader.readLong(offsets[10]);
+  object.uri = reader.readString(offsets[11]);
+  object.year = reader.readLongOrNull(offsets[12]);
   return object;
 }
 
@@ -210,14 +217,16 @@ P _audioModelDeserializeProp<P>(
     case 6:
       return (reader.readStringOrNull(offset)) as P;
     case 7:
-      return (reader.readLong(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 8:
-      return (reader.readString(offset)) as P;
-    case 9:
       return (reader.readLong(offset)) as P;
-    case 10:
+    case 9:
       return (reader.readString(offset)) as P;
+    case 10:
+      return (reader.readLong(offset)) as P;
     case 11:
+      return (reader.readString(offset)) as P;
+    case 12:
       return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1373,6 +1382,80 @@ extension AudioModelQueryFilter
     });
   }
 
+  QueryBuilder<AudioModel, AudioModel, QAfterFilterCondition>
+      mediaStoreIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'mediaStoreId',
+      ));
+    });
+  }
+
+  QueryBuilder<AudioModel, AudioModel, QAfterFilterCondition>
+      mediaStoreIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'mediaStoreId',
+      ));
+    });
+  }
+
+  QueryBuilder<AudioModel, AudioModel, QAfterFilterCondition>
+      mediaStoreIdEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'mediaStoreId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AudioModel, AudioModel, QAfterFilterCondition>
+      mediaStoreIdGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'mediaStoreId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AudioModel, AudioModel, QAfterFilterCondition>
+      mediaStoreIdLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'mediaStoreId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AudioModel, AudioModel, QAfterFilterCondition>
+      mediaStoreIdBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'mediaStoreId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<AudioModel, AudioModel, QAfterFilterCondition> sizeBytesEqualTo(
       int value) {
     return QueryBuilder.apply(this, (query) {
@@ -1906,6 +1989,18 @@ extension AudioModelQuerySortBy
     });
   }
 
+  QueryBuilder<AudioModel, AudioModel, QAfterSortBy> sortByMediaStoreId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'mediaStoreId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AudioModel, AudioModel, QAfterSortBy> sortByMediaStoreIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'mediaStoreId', Sort.desc);
+    });
+  }
+
   QueryBuilder<AudioModel, AudioModel, QAfterSortBy> sortBySizeBytes() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'sizeBytes', Sort.asc);
@@ -2065,6 +2160,18 @@ extension AudioModelQuerySortThenBy
     });
   }
 
+  QueryBuilder<AudioModel, AudioModel, QAfterSortBy> thenByMediaStoreId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'mediaStoreId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AudioModel, AudioModel, QAfterSortBy> thenByMediaStoreIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'mediaStoreId', Sort.desc);
+    });
+  }
+
   QueryBuilder<AudioModel, AudioModel, QAfterSortBy> thenBySizeBytes() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'sizeBytes', Sort.asc);
@@ -2175,6 +2282,12 @@ extension AudioModelQueryWhereDistinct
     });
   }
 
+  QueryBuilder<AudioModel, AudioModel, QDistinct> distinctByMediaStoreId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'mediaStoreId');
+    });
+  }
+
   QueryBuilder<AudioModel, AudioModel, QDistinct> distinctBySizeBytes() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'sizeBytes');
@@ -2255,6 +2368,12 @@ extension AudioModelQueryProperty
   QueryBuilder<AudioModel, String?, QQueryOperations> genreProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'genre');
+    });
+  }
+
+  QueryBuilder<AudioModel, int?, QQueryOperations> mediaStoreIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'mediaStoreId');
     });
   }
 

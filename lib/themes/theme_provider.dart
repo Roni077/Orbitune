@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../core/providers.dart';
 
 enum ThemeType {
   light,
@@ -32,18 +33,24 @@ class ThemeState {
 class ThemeNotifier extends Notifier<ThemeState> {
   @override
   ThemeState build() {
-    // TODO: Load from Hive/SharedPreferences later
-    return const ThemeState();
+    final prefs = ref.watch(sharedPreferencesProvider);
+    final typeIndex = prefs.getInt('theme_type') ?? ThemeType.system.index;
+    final useDynamic = prefs.getBool('theme_dynamic_color') ?? true;
+    
+    return ThemeState(
+      themeType: ThemeType.values[typeIndex],
+      useDynamicColor: useDynamic,
+    );
   }
 
   void setTheme(ThemeType type) {
     state = state.copyWith(themeType: type);
-    // TODO: Save to local storage
+    ref.read(sharedPreferencesProvider).setInt('theme_type', type.index);
   }
 
   void toggleDynamicColor(bool useDynamic) {
     state = state.copyWith(useDynamicColor: useDynamic);
-    // TODO: Save to local storage
+    ref.read(sharedPreferencesProvider).setBool('theme_dynamic_color', useDynamic);
   }
 
   ThemeMode get themeMode {

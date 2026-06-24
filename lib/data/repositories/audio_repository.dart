@@ -15,6 +15,12 @@ class AudioRepository {
     });
   }
 
+  Future<void> deleteAudios(List<Id> ids) async {
+    await _isar.writeTxn(() async {
+      await _isar.audioModels.deleteAll(ids);
+    });
+  }
+
   Future<List<AudioModel>> getAllAudios() async {
     return await _isar.audioModels.where().sortByDateAddedDesc().findAll();
   }

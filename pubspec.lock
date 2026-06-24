@@ -424,14 +424,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.0"
-  get_it:
-    dependency: "direct main"
-    description:
-      name: get_it
-      sha256: "568d62f0e68666fb5d95519743b3c24a34c7f19d834b0658c46e26d778461f66"
-      url: "https://pub.dev"
-    source: hosted
-    version: "9.2.1"
   glob:
     dependency: transitive
     description:
@@ -464,22 +456,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.2"
-  hive:
-    dependency: "direct main"
-    description:
-      name: hive
-      sha256: "8dcf6db979d7933da8217edcec84e9df1bdb4e4edc7fc77dbd5aa74356d6d941"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.3"
-  hive_flutter:
-    dependency: "direct main"
-    description:
-      name: hive_flutter
-      sha256: dca1da446b1d808a51689fb5d0c6c9510c0a2ba01e22805d492c73b68e33eecc
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.0"
   hooks:
     dependency: transitive
     description:

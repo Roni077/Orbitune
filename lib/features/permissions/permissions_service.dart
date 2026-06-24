@@ -4,6 +4,11 @@ import 'package:permission_handler/permission_handler.dart';
 
 class PermissionsService {
   Future<bool> requestMediaPermissions() async {
+    if (Platform.isIOS) {
+      final status = await Permission.mediaLibrary.request();
+      return status.isGranted;
+    }
+
     if (!Platform.isAndroid) return true;
 
     final androidInfo = await DeviceInfoPlugin().androidInfo;
@@ -21,6 +26,10 @@ class PermissionsService {
   }
 
   Future<bool> hasPermissions() async {
+    if (Platform.isIOS) {
+      return await Permission.mediaLibrary.isGranted;
+    }
+
     if (!Platform.isAndroid) return true;
 
     final androidInfo = await DeviceInfoPlugin().androidInfo;

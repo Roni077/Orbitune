@@ -13,6 +13,8 @@ class AudioModel {
   late String artist;
   late String album;
   late String displayName;
+  
+  int? mediaStoreId;
 
   int durationMs = 0;
   int trackNumber = 0;

@@ -15,6 +15,7 @@ class OrbituneAudioHandler extends BaseAudioHandler with SeekHandler {
   Timer? _sleepTimer;
   final SharedPreferences prefs;
   double _preDuckVolume = 1.0;
+  final List<StreamSubscription> _subscriptions = [];
 
   OrbituneAudioHandler(this.prefs) {
     _player = AudioPlayer(
@@ -58,7 +59,7 @@ class OrbituneAudioHandler extends BaseAudioHandler with SeekHandler {
     await session.configure(const AudioSessionConfiguration.music());
 
     // Listen to audio session interruptions (e.g., phone call, other apps)
-    session.interruptionEventStream.listen((event) {
+    _subscriptions.add(session.interruptionEventStream.listen((event) {
       if (event.begin) {
         switch (event.type) {
           case AudioInterruptionType.duck:
@@ -82,7 +83,7 @@ class OrbituneAudioHandler extends BaseAudioHandler with SeekHandler {
             break;
         }
       }
-    });
+    }));
 
     try {
       await _player.setAudioSource(_playlist);
@@ -91,14 +92,14 @@ class OrbituneAudioHandler extends BaseAudioHandler with SeekHandler {
     }
 
     // Broadcast playback state changes to the OS
-    _player.playbackEventStream.listen(_broadcastState);
+    _subscriptions.add(_player.playbackEventStream.listen(_broadcastState));
     
     // Broadcast current media item changes to the OS
-    _player.currentIndexStream.listen((index) {
+    _subscriptions.add(_player.currentIndexStream.listen((index) {
       if (index != null && queue.value.isNotEmpty && index < queue.value.length) {
         mediaItem.add(queue.value[index]);
       }
-    });
+    }));
   }
 
   void _broadcastState(PlaybackEvent event) {
@@ -162,32 +163,32 @@ class OrbituneAudioHandler extends BaseAudioHandler with SeekHandler {
 
   @override
   Future<void> addQueueItems(List<MediaItem> mediaItems) async {
-    final audioSources = mediaItems.map(_createAudioSource).toList();
-    await _playlist.addAll(audioSources);
-    
     final newQueue = queue.value..addAll(mediaItems);
     queue.add(newQueue);
+    
+    final audioSources = mediaItems.map(_createAudioSource).toList();
+    await _playlist.addAll(audioSources);
   }
 
   @override
-  Future<void> updateQueue(List<MediaItem> queue) async {
+  Future<void> updateQueue(List<MediaItem> queueItems) async {
+    super.queue.add(queueItems);
+
     await _playlist.clear();
-    final audioSources = queue.map(_createAudioSource).toList();
+    final audioSources = queueItems.map(_createAudioSource).toList();
     await _playlist.addAll(audioSources);
-    
-    super.queue.add(queue);
   }
 
   Future<void> moveQueueItem(int oldIndex, int newIndex) async {
     if (oldIndex < 0 || oldIndex >= queue.value.length) return;
     if (newIndex < 0 || newIndex >= queue.value.length) return;
 
-    await _playlist.move(oldIndex, newIndex);
-    
     final newQueue = List<MediaItem>.from(queue.value);
     final item = newQueue.removeAt(oldIndex);
     newQueue.insert(newIndex, item);
     queue.add(newQueue);
+
+    await _playlist.move(oldIndex, newIndex);
   }
 
   @override
@@ -195,11 +196,11 @@ class OrbituneAudioHandler extends BaseAudioHandler with SeekHandler {
     if (index < 0) index = 0;
     if (index > queue.value.length) index = queue.value.length;
 
-    await _playlist.insert(index, _createAudioSource(mediaItem));
-    
     final newQueue = List<MediaItem>.from(queue.value);
     newQueue.insert(index, mediaItem);
     queue.add(newQueue);
+
+    await _playlist.insert(index, _createAudioSource(mediaItem));
   }
 
   @override
@@ -231,5 +232,16 @@ class OrbituneAudioHandler extends BaseAudioHandler with SeekHandler {
   void cancelSleepTimer() {
     _sleepTimer?.cancel();
     _sleepTimer = null;
+  }
+
+  @override
+  Future<void> customAction(String name, [Map<String, dynamic>? extras]) async {
+    if (name == 'dispose') {
+      for (var sub in _subscriptions) {
+        sub.cancel();
+      }
+      _player.dispose();
+      await super.stop();
+    }
   }
 }

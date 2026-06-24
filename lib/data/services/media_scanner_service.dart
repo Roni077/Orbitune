@@ -34,6 +34,18 @@ class MediaScannerService {
       'excludedFolders': excludedFolders,
     });
 
+    // Delete orphaned records
+    final existingAudios = await _audioRepository.getAllAudios();
+    final newUris = audioModels.map((a) => a.uri).toSet();
+    final orphanedIds = existingAudios
+        .where((a) => !newUris.contains(a.uri))
+        .map((a) => a.id)
+        .toList();
+
+    if (orphanedIds.isNotEmpty) {
+      await _audioRepository.deleteAudios(orphanedIds);
+    }
+
     // Save to Isar database
     await _audioRepository.saveAudios(audioModels);
     
@@ -57,6 +69,7 @@ class MediaScannerService {
         ..artist = song.artist ?? '<Unknown>'
         ..album = song.album ?? '<Unknown>'
         ..displayName = song.displayName
+        ..mediaStoreId = song.id
         ..durationMs = song.duration ?? 0
         ..trackNumber = song.track ?? 0
         ..sizeBytes = song.size
@@ -92,7 +105,7 @@ class MediaScannerService {
 
       try {
         final Uint8List? artBytes = await _audioQuery.queryArtwork(
-          audio.id,
+          audio.mediaStoreId ?? audio.id,
           ArtworkType.AUDIO,
           format: ArtworkFormat.JPEG,
           size: 500,

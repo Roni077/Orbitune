@@ -74,7 +74,7 @@ class OrbituneApp extends ConsumerWidget {
           darkTheme = AppTheme.darkTheme(themeState.useDynamicColor ? darkDynamic : null);
         }
 
-        final audioHandler = ref.read(audioHandlerProvider);
+        final audioHandler = ref.watch(audioHandlerProvider);
 
         return CallbackShortcuts(
           bindings: <ShortcutActivator, VoidCallback>{
