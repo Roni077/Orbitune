@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:audio_service/audio_service.dart';
@@ -73,12 +74,39 @@ class OrbituneApp extends ConsumerWidget {
           darkTheme = AppTheme.darkTheme(themeState.useDynamicColor ? darkDynamic : null);
         }
 
-        return MaterialApp.router(
-          title: 'Orbitune',
-          theme: theme,
-          darkTheme: darkTheme,
-          themeMode: ref.read(themeProvider.notifier).themeMode,
-          routerConfig: appRouter,
+        final audioHandler = ref.read(audioHandlerProvider);
+
+        return CallbackShortcuts(
+          bindings: <ShortcutActivator, VoidCallback>{
+            const SingleActivator(LogicalKeyboardKey.mediaPlayPause): () {
+              if (audioHandler.playbackState.value.playing) {
+                audioHandler.pause();
+              } else {
+                audioHandler.play();
+              }
+            },
+            const SingleActivator(LogicalKeyboardKey.mediaNextTrack): () => audioHandler.skipToNext(),
+            const SingleActivator(LogicalKeyboardKey.mediaPreviousTrack): () => audioHandler.skipToPrevious(),
+            const SingleActivator(LogicalKeyboardKey.space, control: true): () {
+              if (audioHandler.playbackState.value.playing) {
+                audioHandler.pause();
+              } else {
+                audioHandler.play();
+              }
+            },
+            const SingleActivator(LogicalKeyboardKey.arrowRight, control: true): () => audioHandler.skipToNext(),
+            const SingleActivator(LogicalKeyboardKey.arrowLeft, control: true): () => audioHandler.skipToPrevious(),
+          },
+          child: Focus(
+            autofocus: true,
+            child: MaterialApp.router(
+              title: 'Orbitune',
+              theme: theme,
+              darkTheme: darkTheme,
+              themeMode: ref.read(themeProvider.notifier).themeMode,
+              routerConfig: appRouter,
+            ),
+          ),
         );
       },
     );

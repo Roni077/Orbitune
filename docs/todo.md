@@ -90,7 +90,7 @@
 - [x] Build Analytics Dashboard (Local playback stats, listening history).
 
 ## Phase 12: Final Polish & Desktop Support
-- [ ] Windows Support: Implement keyboard shortcuts, adaptive desktop layout, drag & drop music files, system media controls.
-- [ ] Configure `flutter_launcher_icons`.
-- [ ] Run Dart DevTools for memory profiling and FPS optimization.
-- [ ] Write unit, widget, and integration tests.
+- [x] Windows Support: Implement keyboard shortcuts, adaptive desktop layout, drag & drop music files, system media controls.
+- [x] Configure `flutter_launcher_icons`.
+- [x] Run Dart DevTools for memory profiling and FPS optimization.
+- [x] Write unit, widget, and integration tests.
