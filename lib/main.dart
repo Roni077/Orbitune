@@ -4,6 +4,7 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'routes/app_router.dart';
 import 'themes/app_theme.dart';
 import 'themes/theme_provider.dart';
@@ -16,9 +17,12 @@ import 'data/models/playlist_model.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
+  // Initialize SharedPreferences
+  final prefs = await SharedPreferences.getInstance();
+
   // Initialize background audio handler
   final audioHandler = await AudioService.init(
-    builder: () => OrbituneAudioHandler(),
+    builder: () => OrbituneAudioHandler(prefs),
     config: const AudioServiceConfig(
       androidNotificationChannelId: 'com.orbitune.audio',
       androidNotificationChannelName: 'Orbitune Playback',
@@ -37,6 +41,7 @@ void main() async {
   runApp(
     ProviderScope(
       overrides: [
+        sharedPreferencesProvider.overrideWithValue(prefs),
         audioHandlerProvider.overrideWithValue(audioHandler),
         isarProvider.overrideWithValue(isar),
       ],

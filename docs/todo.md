@@ -71,9 +71,10 @@
 - [x] Implement Gesture System: Swipe to change track, double tap actions, long press menus, custom gesture mapping.
 
 ## Phase 9: Playlists & Queue Management
-- [ ] Build Playlists UI: Create, Edit, Delete, Smart Playlists, Import/Export Playlists.
-- [ ] Implement "Favorite Songs" dedicated UI.
-- [ ] Implement Queue Management: Drag and drop queue, queue save/restore, queue history, temporary queue.
+- [x] Build Playlists UI: Create, Edit, Delete, Smart Playlists, Import/Export Playlists.
+- [x] Implement robust Drag-and-Drop queue management.
+- [x] Implement advanced Queue features: "Play Next", "Add to Queue", "Clear Queue", and "Save Queue as Playlist".
+- [x] Build multi-select functionality across all lists.
 
 ## Phase 10: Audio Enhancement (Equalizer)
 - [ ] Implement `AndroidEqualizer` logic using `just_audio` pipelines.

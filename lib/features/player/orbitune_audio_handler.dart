@@ -2,17 +2,54 @@ import 'dart:async';
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OrbituneAudioHandler extends BaseAudioHandler with SeekHandler {
-  final AudioPlayer _player = AudioPlayer();
+  final AndroidEqualizer equalizer = AndroidEqualizer();
+  final AndroidLoudnessEnhancer loudnessEnhancer = AndroidLoudnessEnhancer();
+  
+  late final AudioPlayer _player;
   final ConcatenatingAudioSource _playlist = ConcatenatingAudioSource(children: []);
   Timer? _sleepTimer;
+  final SharedPreferences prefs;
 
-  OrbituneAudioHandler() {
+  OrbituneAudioHandler(this.prefs) {
+    _player = AudioPlayer(
+      audioPipeline: AudioPipeline(
+        androidAudioEffects: [
+          equalizer,
+          loudnessEnhancer,
+        ],
+      ),
+    );
     _init();
   }
 
   Future<void> _init() async {
+    // Apply saved EQ settings
+    equalizer.setEnabled(prefs.getBool('eq_enabled') ?? false);
+    loudnessEnhancer.setEnabled(prefs.getBool('loudness_enabled') ?? false);
+    
+    final loudnessGain = prefs.getDouble('loudness_gain');
+    if (loudnessGain != null) {
+      loudnessEnhancer.setTargetGain(loudnessGain);
+    }
+
+    // Wait for the pipeline to start processing so parameters become available
+    // FutureBuilder in EqualizerScreen will handle loading. 
+    // We can't synchronously wait for parameters here because it stalls init if no audio is playing.
+    try {
+      final params = await equalizer.parameters;
+      for (int i = 0; i < params.bands.length; i++) {
+        final gain = prefs.getDouble('eq_band_$i');
+        if (gain != null) {
+          params.bands[i].setGain(gain);
+        }
+      }
+    } catch (e) {
+      // Ignored if unsupported
+    }
+
     // Configure audio session for background playback and audio focus ducking
     final session = await AudioSession.instance;
     await session.configure(const AudioSessionConfiguration.music());

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../player_providers.dart';
 
 class AdvancedControlsSheet extends ConsumerStatefulWidget {
@@ -76,6 +77,17 @@ class _AdvancedControlsSheetState extends ConsumerState<AdvancedControlsSheet> {
                 audioHandler.setPitch(1.0);
               },
               child: const Text('Reset Defaults'),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Center(
+            child: FilledButton.icon(
+              onPressed: () {
+                Navigator.pop(context);
+                context.push('/equalizer');
+              },
+              icon: const Icon(Icons.tune),
+              label: const Text('Audio Equalizer'),
             ),
           ),
         ],

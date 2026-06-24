@@ -4,7 +4,17 @@ import 'orbitune_audio_handler.dart';
 
 // Provider for the global AudioHandler instance
 final audioHandlerProvider = Provider<OrbituneAudioHandler>((ref) {
-  throw UnimplementedError('audioHandlerProvider not initialized');
+  throw UnimplementedError('Initialized in main.dart');
+});
+
+final equalizerProvider = Provider((ref) {
+  final handler = ref.watch(audioHandlerProvider);
+  return handler.equalizer;
+});
+
+final loudnessEnhancerProvider = Provider((ref) {
+  final handler = ref.watch(audioHandlerProvider);
+  return handler.loudnessEnhancer;
 });
 
 // Stream provider for the current playback state (playing, paused, buffering, etc)
