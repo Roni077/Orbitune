@@ -1,16 +1,25 @@
+// This is a basic Flutter widget test.
+//
+// To perform an interaction with a widget in your test, use the WidgetTester
+// utility in the flutter_test package. For example, you can send tap and scroll
+// gestures. You can also use WidgetTester to find child widgets in the widget
+// tree, read text, and verify that the values of widget properties are correct.
+
+
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:orbitune/main.dart';
 
 void main() {
-  testWidgets('App smoke test', (WidgetTester tester) async {
-    // Setup mock SharedPreferences
-    SharedPreferences.setMockInitialValues({});
-    
+  testWidgets('App builds successfully', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    // Note: This test acts as a simple compilation and structure test.
-    // For a fully fleshed out test, we'd need to mock Isar and AudioService, 
-    // which goes beyond a simple smoke test.
-    expect(true, isTrue); // Placeholder until full mock environment is configured
+    await tester.pumpWidget(const ProviderScope(child: OrbituneApp()));
+
+    // Wait for router navigation
+    await tester.pumpAndSettle();
+
+    // Verify that Home Screen is rendered.
+    expect(find.text('Home Screen'), findsOneWidget);
   });
 }

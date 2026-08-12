@@ -1,0 +1,10 @@
+targets:
+  $default:
+    builders:
+      riverpod_generator:
+        generate_for:
+          - "lib/**_provider.dart"
+          - "lib/**_viewmodel.dart"
+          - "lib/**_repository_impl.dart"
+          - "lib/**_service.dart"
+          - "lib/**_repository.dart"

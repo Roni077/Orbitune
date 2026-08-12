@@ -1,5 +1,5 @@
 name: orbitune
-description: "A Orbitune Flutter Music Player project."
+description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -34,44 +34,60 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-  flutter_riverpod: ^2.5.1
-  riverpod_annotation: ^2.3.5
-  freezed_annotation: ^2.4.1
-  json_annotation: ^4.9.0
-  go_router: ^17.3.0
-  isar: ^3.1.0+1
-  isar_flutter_libs: ^3.1.0+1
-  just_audio: ^0.10.5
-  audio_service: ^0.18.18
-  audio_session: ^0.2.3
-  on_audio_query: ^2.9.0
-  permission_handler: ^12.0.3
-  dynamic_color: ^1.8.1
-  google_fonts: ^8.1.0
-  palette_generator: ^0.3.3+7
-  flutter_animate: ^4.5.2
-  flutter_native_splash: ^2.4.7
+  flutter_riverpod: ^3.3.1
+  fpdart: ^1.2.0
+  audio_service: ^0.18.19
+  just_audio: ^0.10.6
   shared_preferences: ^2.5.5
+  ytmusicapi_dart: ^2.4.1
+  dio: ^5.11.0
+  on_audio_query: ^2.9.0
+  permission_handler: ^11.3.1
   path_provider: ^2.1.6
-  device_info_plus: ^13.1.0
-  share_plus: ^13.1.0
-  path: ^1.9.1
+  go_router: ^17.3.0
+  google_fonts: ^8.2.0
+  flutter_animate: ^4.5.2
+  shimmer: ^3.0.0
+  flutter_blurhash: ^0.9.1
+  marquee: ^2.3.0
+  dynamic_color: ^1.8.1
+  cached_network_image: ^3.4.1
+  path: ^1.9.0
+  drift: ^2.22.1
+  sqlite3: ^2.9.4
+  sqlite3_flutter_libs: ^0.6.0+eol
+  logger: ^2.7.0
+  flutter_cache_manager: ^3.4.2
+  freezed_annotation:
+  json_annotation:
+  http: ^1.6.0
+  youtube_explode_dart: ^3.1.0
+  flutter_native_splash: ^2.4.7
+  connectivity_plus: ^7.3.1
+  open_filex: ^4.7.0
+  share_plus: ^13.3.0
+  shelf: ^1.4.2
+  shelf_router: ^1.1.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: any
-  freezed: ^2.5.2
-  json_serializable: any
-  riverpod_generator: ^2.4.0
-  isar_generator: ^3.1.0+1
+  flutter_lints: ^6.0.0
+  riverpod_generator: 
+  build_runner: 
+  freezed: 
+  json_serializable: 
+  drift_dev:
+
+dependency_overrides:
+  freezed_annotation: ^3.1.0
+  json_annotation: ^4.12.0
+
+  # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^6.0.0
-  rename: ^3.1.0
-
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
