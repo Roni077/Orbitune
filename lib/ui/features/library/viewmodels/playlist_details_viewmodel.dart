@@ -61,10 +61,10 @@ class PlaylistDetailsViewModel extends AsyncNotifier<List<Track>> {
 
   Future<void> reorderTracks(int oldIndex, int newIndex) async {
     if (_playlist.isFavoritePlaylist) return;
-    
     if (newIndex > oldIndex) {
       newIndex -= 1;
     }
+    
     
     final updatedTrackIds = List<String>.from(_playlist.trackIds);
     final trackId = updatedTrackIds.removeAt(oldIndex);

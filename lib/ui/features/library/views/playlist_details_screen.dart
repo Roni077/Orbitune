@@ -61,6 +61,7 @@ class PlaylistDetailsScreen extends ConsumerWidget {
             return const Center(child: Text('This playlist is empty.'));
           }
           return ReorderableListView.builder(
+            // ignore: deprecated_member_use
             onReorder: (oldIndex, newIndex) {
               ref.read(playlistDetailsViewModelProvider(playlist).notifier).reorderTracks(oldIndex, newIndex);
             },
