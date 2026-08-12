@@ -96,7 +96,7 @@ class CachedLyrics extends Table {
 
 @DriftDatabase(tables: [Tracks, Playlists, PlaylistEntries, PlaybackHistory, FavoriteAlbums, FavoriteArtists, CachedLyrics])
 class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(_openConnection());
+  AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
   int get schemaVersion => 6;
