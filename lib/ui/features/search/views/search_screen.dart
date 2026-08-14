@@ -173,17 +173,30 @@ class _SearchScreenState extends ConsumerState<SearchScreen> with SingleTickerPr
                     if (items.isEmpty) {
                       return const SliverToBoxAdapter(child: SizedBox());
                     }
-                    return SliverGrid(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 3,
-                        mainAxisSpacing: 12,
-                        crossAxisSpacing: 12,
-                      ),
+                    return SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           final item = items[index];
-                          return InkWell(
+                          return ListTile(
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                            leading: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: item.artworkUrl != null
+                                  ? CachedNetworkImage(
+                                      imageUrl: item.artworkUrl!,
+                                      width: 50,
+                                      height: 50,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Container(
+                                      width: 50,
+                                      height: 50,
+                                      color: theme.colorScheme.primaryContainer,
+                                      child: const Icon(Icons.music_note),
+                                    ),
+                            ),
+                            title: Text(item.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w600)),
+                            subtitle: Text(item.artist, maxLines: 1, overflow: TextOverflow.ellipsis),
                             onTap: () async {
                               final track = item as Track;
                               final mediaItem = MediaItem(
@@ -198,47 +211,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> with SingleTickerPr
                               await audioHandler.addQueueItem(mediaItem);
                               await audioHandler.playMediaItem(mediaItem);
                             },
-                            borderRadius: BorderRadius.circular(12),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: theme.colorScheme.secondaryContainer.withValues(alpha: 0.4),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Row(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(12),
-                                      bottomLeft: Radius.circular(12),
-                                    ),
-                                    child: item.artworkUrl != null
-                                        ? CachedNetworkImage(
-                                            imageUrl: item.artworkUrl!,
-                                            width: 50,
-                                            height: 50,
-                                            fit: BoxFit.cover,
-                                          )
-                                        : Container(
-                                            width: 50,
-                                            height: 50,
-                                            color: theme.colorScheme.primaryContainer,
-                                            child: const Icon(Icons.music_note),
-                                          ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(item.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w600)),
-                                        Text(item.artist, maxLines: 1, overflow: TextOverflow.ellipsis, style: theme.textTheme.bodySmall),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
                           );
                         },
                         childCount: items.length,
