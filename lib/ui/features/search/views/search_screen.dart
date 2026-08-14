@@ -74,7 +74,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> with SingleTickerPr
     final showEmptyState = searchQuery.isEmpty && searchState.results.value?.isEmpty == true;
     final showSuggestions = searchQuery.isNotEmpty && _focusNode.hasFocus && searchState.results.value?.isEmpty == true;
     final showResults = searchState.results.isLoading || (searchState.results.value != null && searchState.results.value!.isNotEmpty);
-    final isOnline = true; // Assume always online for now as per user request
 
     return Scaffold(
       appBar: AppBar(
@@ -103,11 +102,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> with SingleTickerPr
                     )
                   : null,
             ),
-            onSubmitted: isOnline ? (query) {
+            onSubmitted: (query) {
               ref.read(searchViewModelProvider.notifier).search(query, ref.read(searchCategoryProvider));
               _focusNode.unfocus();
-            } : null,
-            enabled: isOnline,
+            },
           ),
         ),
         bottom: TabBar(
@@ -125,20 +123,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> with SingleTickerPr
       ),
       body: Builder(
         builder: (context) {
-          if (!isOnline) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.wifi_off, size: 64, color: theme.colorScheme.onSurface.withValues(alpha: 0.3)),
-                  const SizedBox(height: 16),
-                  Text('Online search is unavailable.', style: theme.textTheme.titleMedium),
-                  const SizedBox(height: 8),
-                  Text('Please check your internet connection.', style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface.withValues(alpha: 0.6))),
-                ],
-              ),
-            );
-          }
 
           if (showEmptyState) {
             return CustomScrollView(
