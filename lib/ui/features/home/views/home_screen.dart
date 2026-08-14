@@ -21,8 +21,6 @@ class HomeScreen extends ConsumerWidget {
     final newReleases = ref.watch(newReleasesProvider);
     final charts = ref.watch(chartsProvider);
     final genresAndMoods = ref.watch(genresAndMoodsProvider);
-    final localTracks = ref.watch(homeLocalTracksProvider);
-    final recentlyAdded = ref.watch(recentlyAddedProvider);
     final audioHandler = ref.read(audioHandlerProvider);
     final theme = Theme.of(context);
 
@@ -37,14 +35,6 @@ class HomeScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Orbitune', style: TextStyle(fontWeight: FontWeight.w700)),
         centerTitle: false,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              // Optionally navigate to a dedicated search route if not using bottom tabs
-            },
-          ),
-        ],
       ),
       body: RefreshIndicator(
         onRefresh: () async {
@@ -54,7 +44,6 @@ class HomeScreen extends ConsumerWidget {
           ref.invalidate(trendingProvider);
           ref.invalidate(newReleasesProvider);
           ref.invalidate(chartsProvider);
-          ref.invalidate(homeLocalTracksProvider);
         },
         child: ListView(
           padding: const EdgeInsets.only(bottom: 100),
@@ -182,20 +171,20 @@ class HomeScreen extends ConsumerWidget {
             ),
             _buildSection(
               context, 
-              'Made For You', 
+              'Recommended Artist Stations', 
               madeForYou, // Now uses real mix logic
               audioHandler, 
               theme,
             ),
             _buildGenresSection(
               context,
-              'Genres & Moods',
+              'Browse Categories',
               genresAndMoods,
               theme,
             ),
             _buildSection(
               context, 
-              'Trending Online', 
+              'Trending Now', 
               trending, 
               audioHandler, 
               theme,
@@ -218,20 +207,6 @@ class HomeScreen extends ConsumerWidget {
               context, 
               'Recently Played', 
               recentlyPlayed, 
-              audioHandler, 
-              theme,
-            ),
-            _buildSection(
-              context, 
-              'Recently Added (Local)', 
-              recentlyAdded, 
-              audioHandler, 
-              theme,
-            ),
-            _buildSection(
-              context, 
-              'Local Music', 
-              localTracks, 
               audioHandler, 
               theme,
             ),
