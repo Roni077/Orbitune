@@ -13,7 +13,7 @@ class AppTheme {
         brightness: Brightness.light,
         surface: AppColors.lightBackground,
       ),
-      textTheme: GoogleFonts.outfitTextTheme(ThemeData.light().textTheme),
+      textTheme: GoogleFonts.robotoTextTheme(ThemeData.light().textTheme),
       scaffoldBackgroundColor: AppColors.lightBackground,
       cardTheme: const CardThemeData(
         color: AppColors.lightSurface,
@@ -34,7 +34,7 @@ class AppTheme {
         brightness: Brightness.dark,
         surface: AppColors.darkSurface,
       ),
-      textTheme: GoogleFonts.outfitTextTheme(ThemeData.dark().textTheme),
+      textTheme: GoogleFonts.robotoTextTheme(ThemeData.dark().textTheme),
       scaffoldBackgroundColor: AppColors.darkBackground,
       cardTheme: const CardThemeData(
         color: AppColors.darkSurface,

@@ -53,7 +53,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 children: [
                   _buildPage(
                     title: 'Welcome to Orbitune',
-                    description: 'Your beautiful offline and online modern music player.',
+                    description: 'Your premium online modern music player.',
                     icon: Icons.music_note,
                     theme: theme,
                   ),

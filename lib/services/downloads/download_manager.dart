@@ -5,7 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:audio_service/audio_service.dart';
 import '../../core/helpers/settings_provider.dart';
-import '../../core/helpers/network_state_provider.dart';
+
 
 enum DownloadStatus { queued, downloading, paused, completed, failed, canceled }
 
@@ -111,11 +111,7 @@ class DownloadManagerNotifier extends Notifier<List<DownloadTask>> {
     
     final settings = ref.read(settingsProvider);
     if (settings.wifiOnlyDownload) {
-      final isWifi = ref.read(wifiStateProvider).value ?? false;
-      if (!isWifi) {
-        // Postpone queue processing if not on Wi-Fi and Wi-Fi only is selected
-        return;
-      }
+      // Offline/Wi-Fi detection was removed. We proceed as if online.
     }
 
     final queuedTaskIndex = state.indexWhere((t) => t.status == DownloadStatus.queued);

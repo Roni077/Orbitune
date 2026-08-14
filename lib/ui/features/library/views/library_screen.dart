@@ -43,6 +43,11 @@ class LibraryScreen extends ConsumerWidget {
           ],
           bottom: const TabBar(
             isScrollable: true,
+            indicatorSize: TabBarIndicatorSize.tab,
+            dividerColor: Colors.transparent,
+            tabAlignment: TabAlignment.start,
+            labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal, fontSize: 16),
             tabs: [
               Tab(text: 'Playlists'),
               Tab(text: 'Songs'),

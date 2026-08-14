@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/player/views/mini_player.dart';
-import '../../../core/helpers/network_state_provider.dart';
 
 import 'dart:async';
 import '../../../services/audio/audio_service_provider.dart';
@@ -50,22 +49,9 @@ class _ScaffoldWithNavState extends ConsumerState<ScaffoldWithNav> {
 
   @override
   Widget build(BuildContext context) {
-    final isOnline = ref.watch(networkStateProvider).value ?? true;
-
     return Scaffold(
       body: Column(
         children: [
-          if (!isOnline)
-            Container(
-              color: Colors.red,
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
-              child: const Text(
-                'You are currently offline',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white, fontSize: 12),
-              ),
-            ),
           Expanded(child: widget.navigationShell),
           const MiniPlayer(),
         ],

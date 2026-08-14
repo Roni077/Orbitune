@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:audio_service/audio_service.dart';
 import '../../../../services/audio/audio_service_provider.dart';
-import '../../../../core/helpers/network_state_provider.dart';
+
 import '../../../../domain/entities/track.dart';
 import '../../../../domain/entities/online_item.dart';
 import '../viewmodels/search_viewmodel.dart';
@@ -74,36 +74,47 @@ class _SearchScreenState extends ConsumerState<SearchScreen> with SingleTickerPr
     final showEmptyState = searchQuery.isEmpty && searchState.results.value?.isEmpty == true;
     final showSuggestions = searchQuery.isNotEmpty && _focusNode.hasFocus && searchState.results.value?.isEmpty == true;
     final showResults = searchState.results.isLoading || (searchState.results.value != null && searchState.results.value!.isNotEmpty);
-    final isOnline = ref.watch(networkStateProvider).value ?? true;
+    final isOnline = true; // Assume always online for now as per user request
 
     return Scaffold(
       appBar: AppBar(
-        title: TextField(
-          controller: _controller,
-          focusNode: _focusNode,
-          autofocus: true,
-          decoration: InputDecoration(
-            hintText: 'Search online...',
-            border: InputBorder.none,
-            suffixIcon: searchQuery.isNotEmpty
-                ? IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: () {
-                      _controller.clear();
-                      ref.read(searchViewModelProvider.notifier).clearResults();
-                    },
-                  )
-                : null,
+        title: Container(
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+            borderRadius: BorderRadius.circular(30),
           ),
-          onSubmitted: isOnline ? (query) {
-            ref.read(searchViewModelProvider.notifier).search(query, ref.read(searchCategoryProvider));
-            _focusNode.unfocus();
-          } : null,
-          enabled: isOnline,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: TextField(
+            controller: _controller,
+            focusNode: _focusNode,
+            autofocus: true,
+            style: const TextStyle(fontSize: 16),
+            decoration: InputDecoration(
+              hintText: 'Search songs, artists, albums...',
+              border: InputBorder.none,
+              icon: const Icon(Icons.search),
+              suffixIcon: searchQuery.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        _controller.clear();
+                        ref.read(searchViewModelProvider.notifier).clearResults();
+                      },
+                    )
+                  : null,
+            ),
+            onSubmitted: isOnline ? (query) {
+              ref.read(searchViewModelProvider.notifier).search(query, ref.read(searchCategoryProvider));
+              _focusNode.unfocus();
+            } : null,
+            enabled: isOnline,
+          ),
         ),
         bottom: TabBar(
           controller: _tabController,
           isScrollable: true,
+          indicatorSize: TabBarIndicatorSize.tab,
+          dividerColor: Colors.transparent,
           tabs: const [
             Tab(text: 'Songs'),
             Tab(text: 'Albums'),
@@ -178,30 +189,17 @@ class _SearchScreenState extends ConsumerState<SearchScreen> with SingleTickerPr
                     if (items.isEmpty) {
                       return const SliverToBoxAdapter(child: SizedBox());
                     }
-                    return SliverList(
+                    return SliverGrid(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 3,
+                        mainAxisSpacing: 12,
+                        crossAxisSpacing: 12,
+                      ),
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           final item = items[index];
-                          return ListTile(
-                            leading: Container(
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: theme.colorScheme.secondaryContainer,
-                                borderRadius: BorderRadius.circular(10),
-                                image: item.artworkUrl != null
-                                    ? DecorationImage(
-                                        image: CachedNetworkImageProvider(item.artworkUrl!, maxWidth: 150, maxHeight: 150),
-                                        fit: BoxFit.cover,
-                                      )
-                                    : null,
-                              ),
-                              child: item.artworkUrl == null
-                                  ? Icon(Icons.music_note, color: theme.colorScheme.onSecondaryContainer)
-                                  : null,
-                            ),
-                            title: Text(item.title, maxLines: 1, overflow: TextOverflow.ellipsis),
-                            subtitle: Text(item.artist, maxLines: 1, overflow: TextOverflow.ellipsis),
+                          return InkWell(
                             onTap: () async {
                               final track = item as Track;
                               final mediaItem = MediaItem(
@@ -216,21 +214,54 @@ class _SearchScreenState extends ConsumerState<SearchScreen> with SingleTickerPr
                               await audioHandler.addQueueItem(mediaItem);
                               await audioHandler.playMediaItem(mediaItem);
                             },
+                            borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.secondaryContainer.withValues(alpha: 0.4),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Row(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(12),
+                                      bottomLeft: Radius.circular(12),
+                                    ),
+                                    child: item.artworkUrl != null
+                                        ? CachedNetworkImage(
+                                            imageUrl: item.artworkUrl!,
+                                            width: 50,
+                                            height: 50,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : Container(
+                                            width: 50,
+                                            height: 50,
+                                            color: theme.colorScheme.primaryContainer,
+                                            child: const Icon(Icons.music_note),
+                                          ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(item.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w600)),
+                                        Text(item.artist, maxLines: 1, overflow: TextOverflow.ellipsis, style: theme.textTheme.bodySmall),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           );
                         },
                         childCount: items.length,
                       ),
                     );
                   },
-                  loading: () => SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) => const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                        child: LoadingSkeleton(width: double.infinity, height: 60, borderRadius: 10),
-                      ),
-                      childCount: 5,
-                    ),
-                  ),
+                  loading: () => SliverToBoxAdapter(child: SizedBox(height: 100, child: Center(child: CircularProgressIndicator()))),
                   error: (_, _) => const SliverToBoxAdapter(child: SizedBox()),
                 ),
               ],

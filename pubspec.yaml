@@ -63,7 +63,6 @@ dependencies:
   http: ^1.6.0
   youtube_explode_dart: ^3.1.0
   flutter_native_splash: ^2.4.7
-  connectivity_plus: ^7.3.1
   open_filex: ^4.7.0
   share_plus: ^13.3.0
   shelf: ^1.4.2

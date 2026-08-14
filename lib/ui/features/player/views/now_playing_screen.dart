@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:audio_service/audio_service.dart';
 import '../../../../services/audio/audio_service_provider.dart';
 import '../../../core/widgets/seek_bar.dart';
+import 'dart:ui';
 import 'equalizer_screen.dart';
 import '../../../../services/downloads/download_manager.dart';
 import '../../library/viewmodels/favorites_viewmodel.dart';
@@ -156,14 +157,17 @@ class _NowPlayingScreenState extends ConsumerState<NowPlayingScreen> with Single
         }
 
         return Scaffold(
-      appBar: AppBar(
-        title: const Text('Now Playing', style: TextStyle(fontWeight: FontWeight.w600)),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.keyboard_arrow_down),
-          onPressed: () => Navigator.pop(context),
-        ),
-        actions: [
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            title: const Text('Now Playing', style: TextStyle(fontWeight: FontWeight.w600)),
+            centerTitle: true,
+            leading: IconButton(
+              icon: const Icon(Icons.keyboard_arrow_down),
+              onPressed: () => Navigator.pop(context),
+            ),
+            actions: [
           IconButton(
             icon: const Icon(Icons.share),
             tooltip: 'Share',
@@ -226,15 +230,37 @@ class _NowPlayingScreenState extends ConsumerState<NowPlayingScreen> with Single
           const SizedBox(width: 8),
         ],
       ),
-      body: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Artwork
-                StreamBuilder<PlaybackState>(
-                  stream: audioHandler.playbackState,
-                  builder: (context, playbackSnapshot) {
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          // Blurred Background
+          if (mediaItem.artUri != null)
+            ImageFiltered(
+              imageFilter: ImageFilter.blur(sigmaX: 60.0, sigmaY: 60.0),
+              child: CachedNetworkImage(
+                imageUrl: mediaItem.artUri!.toString(),
+                fit: BoxFit.cover,
+                errorWidget: (context, url, error) => Container(color: theme.colorScheme.surface),
+              ),
+            )
+          else
+            Container(color: theme.colorScheme.surface),
+          
+          // Dark Overlay for readability
+          Container(
+            color: theme.colorScheme.surface.withValues(alpha: 0.6),
+          ),
+          
+          SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Artwork
+                  StreamBuilder<PlaybackState>(
+                    stream: audioHandler.playbackState,
+                    builder: (context, playbackSnapshot) {
                     final isPlaying = playbackSnapshot.data?.playing ?? false;
                     if (isPlaying) {
                       _animationController.repeat();
@@ -258,9 +284,9 @@ class _NowPlayingScreenState extends ConsumerState<NowPlayingScreen> with Single
                               : null,
                           boxShadow: [
                             BoxShadow(
-                              color: theme.colorScheme.shadow.withValues(alpha: 0.2),
-                              blurRadius: 20,
-                              offset: const Offset(0, 10),
+                              color: Colors.black.withValues(alpha: 0.4),
+                              blurRadius: 40,
+                              offset: const Offset(0, 20),
                             ),
                           ],
                         ),
@@ -303,7 +329,10 @@ class _NowPlayingScreenState extends ConsumerState<NowPlayingScreen> with Single
                         children: [
                           Text(
                             mediaItem.title,
-                            style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                            style: theme.textTheme.headlineMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: theme.colorScheme.onSurface,
+                            ),
                             textAlign: TextAlign.center,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
@@ -311,7 +340,7 @@ class _NowPlayingScreenState extends ConsumerState<NowPlayingScreen> with Single
                           const SizedBox(height: 8),
                           Text(
                             mediaItem.artist ?? 'Unknown Artist',
-                            style: theme.textTheme.titleMedium?.copyWith(
+                            style: theme.textTheme.titleLarge?.copyWith(
                               color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                             ),
                             textAlign: TextAlign.center,
@@ -491,7 +520,10 @@ class _NowPlayingScreenState extends ConsumerState<NowPlayingScreen> with Single
               ],
             ),
           ),
-        );
+          ),
+        ],
+      ),
+    );
       },
     );
   }
